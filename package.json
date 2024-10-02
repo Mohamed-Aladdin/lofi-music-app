@@ -1,0 +1,35 @@
+{
+  "name": "lofi-music-app",
+  "version": "1.0.0",
+  "description": "A music app that allows users to share multiple playlists and contribute together to them.",
+  "main": "server.js",
+  "scripts": {
+    "start": "cross-env NODE_ENV=production node server.js",
+    "dev": "cross-env NODE_ENV=development nodemon server.js",
+    "test": "mocha --require @babel/register --exit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://@github.com/Mohamed-Aladdin/lofi-music-app.git"
+  },
+  "author": "Mohamed Aladdin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mohamed-Aladdin/lofi-music-app/issues"
+  },
+  "homepage": "https://github.com/Mohamed-Aladdin/lofi-music-app#readme",
+  "devDependencies": {
+    "chai": "^5.1.1",
+    "cross-env": "^7.0.3",
+    "mocha": "^10.7.3",
+    "nodemon": "^3.1.7",
+    "request": "^2.88.2"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "mongoose": "^8.7.0"
+  }
+}
