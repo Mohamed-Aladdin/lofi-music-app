@@ -15,11 +15,14 @@ class DBClient {
         const conn = await mongoose.connect(this.url).then(() => {
           this.connectionEstablished = true;
         });
-        console.log(`MongoDB connected: ${conn.connection.host}`);
+        console.log(`MongoDB client connected: ${conn.connection.host}`);
       } catch (err) {
-        console.log(`MongoDB failed to connect: ${err.toString()}`);
+        console.log(`MongoDB client failed to connect: ${err.toString()}`);
       }
     };
+    this.users = User;
+    this.playlists = Playlist;
+    this.songs = Song;
   }
 
   isAlive() {
@@ -27,15 +30,15 @@ class DBClient {
   }
 
   async nbUsers() {
-    return User.countDocuments();
+    return this.users.countDocuments();
   }
 
   async nbPlaylists() {
-    return Playlist.countDocuments();
+    return this.playlists.countDocuments();
   }
 
   async nbSongs() {
-    return Song.countDocuments();
+    return this.songs.countDocuments();
   }
 }
 
