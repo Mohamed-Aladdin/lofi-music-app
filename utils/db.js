@@ -40,6 +40,14 @@ class DBClient {
   async nbSongs() {
     return this.songs.countDocuments();
   }
+
+  async getUserByEmail(email) {
+    return this.users.findOne({ email });
+  }
+
+  async getUserById(id) {
+    return this.users.findById(id);
+  }
 }
 
 const dbClient = new DBClient();
