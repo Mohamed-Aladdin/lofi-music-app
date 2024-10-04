@@ -34,6 +34,27 @@ export default class UsersController {
     }
   }
 
+  static async getMe(req, res) {
+    try {
+      const { user } = req;
+      delete user.password;
+      return res.status(200).json(user);
+    } catch (err) {
+      console.error({ error: err.toString() });
+    }
+  }
+
+  static async resetPassword(req, res) {
+    const { user } = req;
+
+    if (!bcrypt.compareSync(req.body.password, user.password)) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    await dbClient.updateUserPass(user._id, req.body.newPassword);
+    const { password, newPassword, ...restOfUserData } = user;
+    return res.status(200).json(restOfUserData);
+  }
+
   static async deleteAccount(req, res) {
     try {
       const { user } = req;

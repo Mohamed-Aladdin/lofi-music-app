@@ -56,6 +56,13 @@ class DBClient {
   async deleteUser(id) {
     return this.users.deleteOne({ _id: id });
   }
+
+  async updateUserPass(id, newPassword) {
+    return this.users.updateOne(
+      { _id: id },
+      { $set: { password: newPassword } }
+    );
+  }
 }
 
 const dbClient = new DBClient();
