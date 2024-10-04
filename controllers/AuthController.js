@@ -10,7 +10,7 @@ export default class AuthController {
       await redisClient.set(`auth_${token}`, user._id.toString(), 60 * 60 * 24);
       return res.status(200).json({ token });
     } catch (err) {
-      console.error({ error: err });
+      console.error({ error: err.toString() });
     }
   }
 
@@ -19,6 +19,8 @@ export default class AuthController {
       const token = req.headers['x-token'];
       await redisClient.del(`auth_${token}`);
       return res.status(204).send();
-    } catch (err) {}
+    } catch (err) {
+      console.error({ error: err.toString() });
+    }
   }
 }

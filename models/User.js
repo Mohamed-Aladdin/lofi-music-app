@@ -7,7 +7,6 @@ const UserSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true, trim: true },
     phone: {
       type: String,
-      required: true,
       unique: true,
       trim: true,
       validate: {
@@ -17,7 +16,7 @@ const UserSchema = new mongoose.Schema(
         message: (props) => `${props.value} is not a valid phone number!`,
       },
     },
-    country: { type: String, required: true, trim: true },
+    country: { type: String, trim: true },
     password: { type: String, required: true, select: false },
     playlists: {
       type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Playlist' }],

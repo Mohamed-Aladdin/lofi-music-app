@@ -48,6 +48,14 @@ class DBClient {
   async getUserById(id) {
     return this.users.findById(id);
   }
+
+  async createUser(user) {
+    return this.users.insertOne(user);
+  }
+
+  async deleteUser(id) {
+    return this.users.deleteOne({ _id: id });
+  }
 }
 
 const dbClient = new DBClient();
