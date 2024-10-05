@@ -63,6 +63,25 @@ class DBClient {
       { $set: { password: newPassword } }
     );
   }
+
+  async createPlaylist(playlist) {
+    return this.playlists.insertOne(playlist);
+  }
+
+  async getPlaylist(id) {
+    return this.playlists.findById(id);
+  }
+
+  async updatePlaylist(id, playlist) {
+    return this.playlists.findByIdAndUpdate(id, playlist, {
+      new: true,
+      runValidators: true,
+    });
+  }
+
+  async deletePlaylist(id) {
+    return this.playlists.deleteOne({ _id: id });
+  }
 }
 
 const dbClient = new DBClient();
