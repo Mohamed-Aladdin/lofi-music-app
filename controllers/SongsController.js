@@ -23,4 +23,50 @@ export default class SongsController {
       console.error({ error: err.toString() });
     }
   }
+
+  async addSongToFavorites(req, res) {
+    try {
+      const { user } = req;
+      const song = await dbClient.createSong(req.body);
+
+      if (user.favoritedSongs.includes(song._id)) {
+        return res.status(400).json({ error: 'Already exist' });
+      }
+      const updatedFavorites = await dbClient.addSongToFavorites(
+        user._id,
+        song._id
+      );
+
+      return res.status(200).json(updatedFavorites);
+    } catch (err) {
+      console.error({ error: err.toString() });
+    }
+  }
+
+  async removeSongFromFavorites(req, res) {
+    try {
+      const { user } = req;
+      const updatedFavorites = await dbClient.deleteSongFromFavorites(
+        user._id,
+        req.params.id
+      );
+      return res.status(204).json({ updatedFavorites });
+    } catch (err) {
+      console.error({ error: err.toString() });
+    }
+  }
+
+  async getFavoriteSongs(req, res) {
+    try {
+      const { user } = req;
+      const favorites = await dbClient.getFavorites(user._id);
+
+      if (!favorites) {
+        return res.status(404).json({ error: 'Not found' });
+      }
+      return res.status(200).json(favorites);
+    } catch (err) {
+      console.error({ error: err.toString() });
+    }
+  }
 }

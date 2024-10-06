@@ -115,6 +115,29 @@ class DBClient {
       { $pop: { songs: songId } }
     );
   }
+
+  async addSongToFavorites(userId, songId) {
+    const updatedFavorites = await this.users.updateOne(
+      { _id: userId },
+      { $push: { favoritedSongs: songId } }
+    ).favoritedSongs;
+
+    return this.songs.find({ _id: { $in: updatedFavorites } });
+  }
+
+  async deleteSongFromFavorites(userId, songId) {
+    const updatedFavorites = await this.users.updateOne(
+      { _id: userId },
+      { $pop: { favoritedSongs: songId } }
+    ).favoritedSongs;
+
+    return this.songs.find({ _id: { $in: updatedFavorites } });
+  }
+
+  async getFavorites(userId) {
+    const favorites = await this.users.findById(userId).favoritedSongs;
+    return this.songs.find({ _id: { $in: favorites } });
+  }
 }
 
 const dbClient = new DBClient();
