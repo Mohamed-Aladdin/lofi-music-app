@@ -49,6 +49,10 @@ class DBClient {
     return this.users.findById(id);
   }
 
+  async getUserByUsername(username) {
+    return this.users.findOne({ username });
+  }
+
   async createUser(user) {
     return this.users.insertOne(user);
   }
@@ -79,8 +83,37 @@ class DBClient {
     });
   }
 
+  async addCollaboratorsToPlaylist(playlistId, userId) {
+    return this.playlists.updateOne(
+      { _id: playlistId },
+      { $push: { collaborators: userId } }
+    );
+  }
+
+  async addSongsToPlaylist(playlistId, songId) {
+    return this.playlists.updateOne(
+      { _id: playlistId },
+      { $push: { songs: songId } }
+    );
+  }
+
   async deletePlaylist(id) {
     return this.playlists.deleteOne({ _id: id });
+  }
+
+  async createSong(song) {
+    return this.songs.insertOne(song);
+  }
+
+  async getSong(id) {
+    return this.songs.findById(id);
+  }
+
+  async deleteSongFromPlaylist(playlistId, songId) {
+    return this.playlists.updateOne(
+      { _id: playlistId },
+      { $pop: { songs: songId } }
+    );
   }
 }
 
