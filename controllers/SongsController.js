@@ -24,6 +24,27 @@ export default class SongsController {
     }
   }
 
+  static async deleteSongFromPlaylist(req, res) {
+    try {
+      const { user } = req;
+      const playlist = await dbClient.getPlaylist(req.params.id);
+
+      if (
+        user._id !== playlist.userId ||
+        !playlist.collaborators.includes(user._id)
+      ) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      const updatedPlaylist = await dbClient.deleteSongFromPlaylist(
+        playlist._id,
+        SongId
+      );
+      return res.status(204).json(updatedPlaylist);
+    } catch (err) {
+      console.error({ error: err.toString() });
+    }
+  }
+
   async addSongToFavorites(req, res) {
     try {
       const { user } = req;

@@ -22,18 +22,14 @@ router.put(
   PlaylistsController.updatePlaylist
 );
 
-router.put('/:id', verifyUserFromToken, PlaylistsController.addCollaborators);
+router.put('/playlist/collaborators/:id', verifyUserFromToken, PlaylistsController.addCollaborators);
+
+router.delete('/playlist/collaborators/:id', verifyUserFromToken, PlaylistsController.deleteCollaborators);
 
 router.delete(
   '/playlist/:id',
   verifyUserFromToken,
   PlaylistsController.deletePlaylist
-);
-
-router.delete(
-  '/:id',
-  verifyUserFromToken,
-  PlaylistsController.deleteSongFromPlaylist
 );
 
 router.put(

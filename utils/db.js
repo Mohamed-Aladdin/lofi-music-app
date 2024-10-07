@@ -90,6 +90,13 @@ class DBClient {
     );
   }
 
+  async deleteCollaboratorsFromPlaylist(playlistId, userId) {
+    return this.playlists.updateOne(
+      { _id: playlistId },
+      { $pop: { collaborators: userId } }
+    );
+  }
+
   async addSongsToPlaylist(playlistId, songId) {
     return this.playlists.updateOne(
       { _id: playlistId },

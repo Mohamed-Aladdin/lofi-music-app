@@ -1,19 +1,36 @@
 import express from 'express';
-import { verifyUserFromAuth } from '../middlewares/auth';
+import { verifyUserFromToken } from '../middlewares/auth';
 import SongsController from '../controllers/SongsController';
 
 const router = express.Router();
 
 router.get(
   '/songs/favorites',
-  verifyUserFromAuth,
+  verifyUserFromToken,
   SongsController.getFavoriteSongs
 );
-router.post('/songs', verifyUserFromAuth, SongsController.addSongToFavorites);
-router.put('/songs/:id', verifyUserFromAuth, SongsController.addSongToPlaylist);
+
+router.post(
+  '/songs/favorites',
+  verifyUserFromToken,
+  SongsController.addSongToFavorites
+);
+
+router.put(
+  '/songs/:id',
+  verifyUserFromToken,
+  SongsController.addSongToPlaylist
+);
+
 router.delete(
   '/songs/:id',
-  verifyUserFromAuth,
+  verifyUserFromToken,
+  PlaylistsController.deleteSongFromPlaylist
+);
+
+router.delete(
+  '/songs/favorites/:id',
+  verifyUserFromToken,
   SongsController.removeSongFromFavorites
 );
 
