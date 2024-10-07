@@ -1,7 +1,6 @@
 import express from 'express';
 import { verifyUserFromToken } from '../middlewares/auth';
 import PlaylistsController from '../controllers/PlaylistsController';
-import SongsController from '../controllers/SongsController';
 
 const router = express.Router();
 
@@ -31,4 +30,20 @@ router.delete(
   PlaylistsController.deletePlaylist
 );
 
-router.delete('/:id', verifyUserFromToken, PlaylistsController.deleteSong);
+router.delete(
+  '/:id',
+  verifyUserFromToken,
+  PlaylistsController.deleteSongFromPlaylist
+);
+
+router.put(
+  '/playlists/favorites/:id',
+  verifyUserFromToken,
+  PlaylistsController.addFavoritePlaylist
+);
+
+router.delete(
+  '/playlists/favorites/:id',
+  verifyUserFromToken,
+  PlaylistsController.deletePlaylistFromFavorites
+);

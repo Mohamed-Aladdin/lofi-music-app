@@ -138,6 +138,20 @@ class DBClient {
     const favorites = await this.users.findById(userId).favoritedSongs;
     return this.songs.find({ _id: { $in: favorites } });
   }
+
+  async addplaylistToFavorites(userId, playlistId) {
+    return this.users.updateOne(
+      { _id: userId },
+      { $push: { favoritedPlaylists: playlistId } }
+    );
+  }
+
+  async deletePlaylistFromFavorites(userId, playlistId) {
+    return this.users.updateOne(
+      { _id: userId },
+      { $pop: { favoritedPlaylists: playlistId } }
+    );
+  }
 }
 
 const dbClient = new DBClient();

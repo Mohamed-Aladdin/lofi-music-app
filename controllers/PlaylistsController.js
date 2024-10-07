@@ -70,7 +70,7 @@ export default class PlaylistsController {
     }
   }
 
-  static async deleteSong(req, res) {
+  static async deleteSongFromPlaylist(req, res) {
     try {
       const { user } = req;
       const playlist = await dbClient.getPlaylist(req.params.id);
@@ -86,6 +86,34 @@ export default class PlaylistsController {
         SongId
       );
       return res.status(204).json(updatedPlaylist);
+    } catch (err) {
+      console.error({ error: err.toString() });
+    }
+  }
+
+  static async addFavoritePlaylist(req, res) {
+    try {
+      const { user } = req;
+      const updatedFavorites = await dbClient.addplaylistToFavorites(
+        user._id,
+        req.params.id
+      );
+
+      return res.status(201).json(updatedFavorites);
+    } catch (err) {
+      console.error({ error: err.toString() });
+    }
+  }
+
+  static async deletePlaylistFromFavorites(req, res) {
+    try {
+      const { user } = req;
+      const updatedFavorites = await dbClient.deletePlaylistFromFavorites(
+        user._id,
+        req.params.id
+      );
+
+      return res.status(204).json(updatedFavorites);
     } catch (err) {
       console.error({ error: err.toString() });
     }
