@@ -4,32 +4,24 @@ import SongsController from '../controllers/SongsController';
 
 const router = express.Router();
 
-router.get(
-  '/songs/favorites',
-  verifyUserFromToken,
-  SongsController.getFavoriteSongs
-);
+router.get('/favorites', verifyUserFromToken, SongsController.getFavoriteSongs);
 
 router.post(
-  '/songs/favorites',
+  '/favorites',
   verifyUserFromToken,
   SongsController.addSongToFavorites
 );
 
-router.put(
-  '/songs/:id',
+router.put('/:id', verifyUserFromToken, SongsController.addSongToPlaylist);
+
+router.delete(
+  '/:id',
   verifyUserFromToken,
-  SongsController.addSongToPlaylist
+  SongsController.deleteSongFromPlaylist
 );
 
 router.delete(
-  '/songs/:id',
-  verifyUserFromToken,
-  PlaylistsController.deleteSongFromPlaylist
-);
-
-router.delete(
-  '/songs/favorites/:id',
+  '/favorites/:id',
   verifyUserFromToken,
   SongsController.removeSongFromFavorites
 );

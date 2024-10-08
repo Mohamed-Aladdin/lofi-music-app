@@ -11,7 +11,7 @@ export default class PlaylistsController {
       const newPlaylist = await dbClient.createPlaylist(playlist);
       return res.status(201).json(newPlaylist);
     } catch (err) {
-      console.error({ error: err.toString() });
+      console.error({ error: err.message });
     }
   }
 
@@ -33,7 +33,7 @@ export default class PlaylistsController {
       );
       return res.status(200).json(updatedPlaylist);
     } catch (err) {
-      console.error({ error: err.toString() });
+      console.error({ error: err.message });
     }
   }
 
@@ -42,7 +42,7 @@ export default class PlaylistsController {
       await dbClient.deletePlaylist(req.params.id);
       return res.status(204).send();
     } catch (err) {
-      console.error({ error: err.toString() });
+      console.error({ error: err.message });
     }
   }
 
@@ -66,7 +66,7 @@ export default class PlaylistsController {
 
       return res.status(201).json(updatedPlaylist);
     } catch (err) {
-      console.error({ error: err.toString() });
+      console.error({ error: err.message });
     }
   }
 
@@ -92,7 +92,7 @@ export default class PlaylistsController {
 
       return res.status(204).json(updatedPlaylist);
     } catch (err) {
-      console.error({ error: err.toString() });
+      console.error({ error: err.message });
     }
   }
 
@@ -106,7 +106,7 @@ export default class PlaylistsController {
 
       return res.status(201).json(updatedFavorites);
     } catch (err) {
-      console.error({ error: err.toString() });
+      console.error({ error: err.message });
     }
   }
 
@@ -120,7 +120,7 @@ export default class PlaylistsController {
 
       return res.status(204).json(updatedFavorites);
     } catch (err) {
-      console.error({ error: err.toString() });
+      console.error({ error: err.message });
     }
   }
 }

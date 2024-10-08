@@ -24,13 +24,14 @@ export default class UsersController {
       if (foundUser) {
         return res.status(400).json({ error: 'Already exist' });
       }
-      const hash = bcrypt.hashSync(password, process.env.SALT);
+      const salt = parseInt(process.env.SALT, 10);
+      const hash = bcrypt.hashSync(password, salt);
       const newUser = { ...req.body, password: hash };
 
       const user = await dbClient.createUser(newUser);
-      return res.status(201).json({ id: user._id.toString(), email });
+      return res.status(201).json({ id: user._id, email });
     } catch (err) {
-      console.error({ error: err.toString() });
+      console.error({ error: err.message });
     }
   }
 
@@ -40,22 +41,25 @@ export default class UsersController {
       delete user.password;
       return res.status(200).json(user);
     } catch (err) {
-      console.error({ error: err.toString() });
+      console.error({ error: err.message });
     }
   }
 
   static async resetPassword(req, res) {
     try {
       const { user } = req;
+      const checkUser = await dbClient.getUserPassword(user.email);
 
-      if (!bcrypt.compareSync(req.body.password, user.password)) {
+      if (!bcrypt.compareSync(req.body.password, checkUser.password)) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
-      await dbClient.updateUserPass(user._id, req.body.newPassword);
-      const { password, newPassword, ...restOfUserData } = user;
-      return res.status(200).json(restOfUserData);
+      const salt = parseInt(process.env.SALT, 10);
+      const hash = bcrypt.hashSync(req.body.newPassword, salt);
+
+      await dbClient.updateUserPass(user._id, hash);
+      return res.status(200).send();
     } catch (err) {
-      console.error({ error: err.toString() });
+      console.error({ error: err.message });
     }
   }
 
@@ -67,7 +71,7 @@ export default class UsersController {
       await redisClient.del(`auth_${req.headers['x-token']}`);
       return res.status(204).send();
     } catch (err) {
-      console.error({ error: err.toString() });
+      console.error({ error: err.message });
     }
   }
 }

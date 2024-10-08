@@ -4,42 +4,36 @@ import PlaylistsController from '../controllers/PlaylistsController';
 
 const router = express.Router();
 
-router.get(
-  '/playlist/:id',
-  verifyUserFromToken,
-  PlaylistsController.getPlaylist
-);
+router.get('/:id', verifyUserFromToken, PlaylistsController.getPlaylist);
 
-router.post(
-  '/playlist',
-  verifyUserFromToken,
-  PlaylistsController.createPlaylist
-);
+router.post('/', verifyUserFromToken, PlaylistsController.createPlaylist);
+
+router.put('/:id', verifyUserFromToken, PlaylistsController.updatePlaylist);
 
 router.put(
-  '/playlist/:id',
+  '/collaborators/:id',
   verifyUserFromToken,
-  PlaylistsController.updatePlaylist
+  PlaylistsController.addCollaborators
 );
-
-router.put('/playlist/collaborators/:id', verifyUserFromToken, PlaylistsController.addCollaborators);
-
-router.delete('/playlist/collaborators/:id', verifyUserFromToken, PlaylistsController.deleteCollaborators);
 
 router.delete(
-  '/playlist/:id',
+  '/collaborators/:id',
   verifyUserFromToken,
-  PlaylistsController.deletePlaylist
+  PlaylistsController.deleteCollaborators
 );
 
+router.delete('/:id', verifyUserFromToken, PlaylistsController.deletePlaylist);
+
 router.put(
-  '/playlists/favorites/:id',
+  '/favorites/:id',
   verifyUserFromToken,
   PlaylistsController.addFavoritePlaylist
 );
 
 router.delete(
-  '/playlists/favorites/:id',
+  '/favorites/:id',
   verifyUserFromToken,
   PlaylistsController.deletePlaylistFromFavorites
 );
+
+export { router as playlistsRouter };

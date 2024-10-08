@@ -5,12 +5,19 @@ export default class AuthController {
   static async login(req, res) {
     try {
       const { user } = req;
+      const userLoggedIn = await redisClient.getAllKeyValues(user._id.toString());
+      
+      if (userLoggedIn) {
+        return res.status(200).json(userLoggedIn);
+      }
       const token = v4();
 
       await redisClient.set(`auth_${token}`, user._id.toString(), 60 * 60 * 24);
-      return res.status(200).json({ token });
+      console.log(await redisClient.get(`auth_${token}`));
+      
+      return res.status(200).json({ id: user._id, token });
     } catch (err) {
-      console.error({ error: err.toString() });
+      console.error({ error: err.message });
     }
   }
 
@@ -20,7 +27,7 @@ export default class AuthController {
       await redisClient.del(`auth_${token}`);
       return res.status(204).send();
     } catch (err) {
-      console.error({ error: err.toString() });
+      console.error({ error: err.message });
     }
   }
 }

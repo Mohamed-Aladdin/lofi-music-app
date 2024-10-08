@@ -1,7 +1,7 @@
 import dbClient from '../utils/db';
 
 export default class SongsController {
-  async addSongToPlaylist(req, res) {
+  static async addSongToPlaylist(req, res) {
     try {
       const { user } = req;
       const playlist = await dbClient.getPlaylist(req.params.id);
@@ -20,7 +20,7 @@ export default class SongsController {
 
       return res.status(201).json(updatedPlaylist);
     } catch (err) {
-      console.error({ error: err.toString() });
+      console.error({ error: err.message });
     }
   }
 
@@ -41,11 +41,11 @@ export default class SongsController {
       );
       return res.status(204).json(updatedPlaylist);
     } catch (err) {
-      console.error({ error: err.toString() });
+      console.error({ error: err.message });
     }
   }
 
-  async addSongToFavorites(req, res) {
+  static async addSongToFavorites(req, res) {
     try {
       const { user } = req;
       const song = await dbClient.createSong(req.body);
@@ -60,11 +60,11 @@ export default class SongsController {
 
       return res.status(200).json(updatedFavorites);
     } catch (err) {
-      console.error({ error: err.toString() });
+      console.error({ error: err.message });
     }
   }
 
-  async removeSongFromFavorites(req, res) {
+  static async removeSongFromFavorites(req, res) {
     try {
       const { user } = req;
       const updatedFavorites = await dbClient.deleteSongFromFavorites(
@@ -73,11 +73,11 @@ export default class SongsController {
       );
       return res.status(204).json({ updatedFavorites });
     } catch (err) {
-      console.error({ error: err.toString() });
+      console.error({ error: err.message });
     }
   }
 
-  async getFavoriteSongs(req, res) {
+  static async getFavoriteSongs(req, res) {
     try {
       const { user } = req;
       const favorites = await dbClient.getFavorites(user._id);
@@ -87,7 +87,7 @@ export default class SongsController {
       }
       return res.status(200).json(favorites);
     } catch (err) {
-      console.error({ error: err.toString() });
+      console.error({ error: err.message });
     }
   }
 }

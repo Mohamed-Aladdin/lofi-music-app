@@ -3,24 +3,29 @@ import dbClient from './db';
 import redisClient from './redis';
 
 export const getUserFromAuthHeaders = async (req) => {
-  const authorization = req.headers.authorization;
+  try {
+    const authorization = req.headers.authorization;
 
-  if (!authorization) {
-    return null;
-  }
-  const authParts = authorization.split(' ');
+    if (!authorization) {
+      return null;
+    }
+    const authParts = authorization.split(' ');
 
-  if (authParts.length !== 2 || authParts[0] !== 'Basic') {
-    return null;
+    if (authParts.length !== 2 || authParts[0] !== 'Basic') {
+      return null;
+    }
+    const token = Buffer.from(authParts[1], 'base64').toString();
+    const [email, password] = token.split(':', 2);
+    const foundUser = await dbClient.getUserPassword(email);
+    
+    if (!bcrypt.compareSync(password, foundUser.password)) {
+      return null;
+    }
+    const user = await dbClient.getUserByEmail(email);
+    return user;
+  } catch (err) {
+    console.error({ error: err.stack });
   }
-  const token = Buffer.from(authParts[1], 'base64').toString();
-  const [email, password] = token.split(':', 1);
-  const user = await dbClient.getUserByEmail(email);
-
-  if (!user || !bcrypt.compareSync(password, user.password)) {
-    return null;
-  }
-  return user;
 };
 
 export const getUserFromTokenHeaders = async (req) => {

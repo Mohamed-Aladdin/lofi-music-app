@@ -10,19 +10,25 @@ class DBClient {
     this.database = process.env.DB_DATABASE || 'music_app';
     this.url = `mongodb://${this.host}:${this.port}/${this.database}`;
     this.connectionEstablished = false;
-    this.client = async () => {
-      try {
-        const conn = await mongoose.connect(this.url).then(() => {
-          this.connectionEstablished = true;
-        });
-        console.log(`MongoDB client connected: ${conn.connection.host}`);
-      } catch (err) {
-        console.log(`MongoDB client failed to connect: ${err.toString()}`);
-      }
-    };
     this.users = User;
     this.playlists = Playlist;
     this.songs = Song;
+  }
+
+  async connect() {
+    try {
+      const conn = await mongoose.connect(this.url, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      });
+      this.connectionEstablished = true;
+
+      console.log(`MongoDB client connected: ${conn.connection.host}`);
+    } catch (err) {
+      this.connectionEstablished = false;
+
+      console.error(`MongoDB client failed to connect: ${err.message}`);
+    }
   }
 
   isAlive() {
@@ -53,8 +59,13 @@ class DBClient {
     return this.users.findOne({ username });
   }
 
+  async getUserPassword(email) {
+    return this.users.findOne({ email }).select('password');
+  }
+
   async createUser(user) {
-    return this.users.insertOne(user);
+    const newUser = await this.users(user);
+    return newUser.save();
   }
 
   async deleteUser(id) {
@@ -69,7 +80,8 @@ class DBClient {
   }
 
   async createPlaylist(playlist) {
-    return this.playlists.insertOne(playlist);
+    const newPlaylist = await this.playlists(playlist);
+    return newPlaylist.save();
   }
 
   async getPlaylist(id) {
@@ -109,7 +121,8 @@ class DBClient {
   }
 
   async createSong(song) {
-    return this.songs.insertOne(song);
+    const newSong = await this.songs(song);
+    return newSong.save();
   }
 
   async getSong(id) {
@@ -162,5 +175,6 @@ class DBClient {
 }
 
 const dbClient = new DBClient();
+dbClient.connect();
 
 export default dbClient;
