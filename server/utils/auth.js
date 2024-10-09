@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { request } from 'express';
+import request from 'request';
 import dbClient from './db';
 import redisClient from './redis';
 
@@ -46,6 +46,11 @@ export const getUserFromTokenHeaders = async (req) => {
 };
 
 export const getSpotifyToken = async () => {
+  const cached_token = await redisClient.get('spotify');
+
+  if (cached_token) {
+    return cached_token;
+  }
   const authOptions = {
     url: 'https://accounts.spotify.com/api/token',
     headers: {
@@ -64,9 +69,11 @@ export const getSpotifyToken = async () => {
     json: true,
   };
 
-  await request.post(authOptions, function (error, response, body) {
+  request.post(authOptions, async function (error, response, body) {
     if (!error && response.statusCode === 200) {
       const access_token = body.access_token;
+
+      await redisClient.set('spotify', access_token, 60 * 60);
       return access_token;
     }
     return null;
