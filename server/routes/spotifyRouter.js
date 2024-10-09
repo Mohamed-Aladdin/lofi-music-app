@@ -18,4 +18,18 @@ router.get(
   SpotifyController.getArtist
 );
 
+router.get(
+  '/tracks/:id',
+  verifyUserFromToken,
+  verifySpotifyToken,
+  SpotifyController.getSong
+);
+
+router.get(
+  '/search',
+  verifyUserFromToken,
+  verifySpotifyToken,
+  SpotifyController.searchSongs
+);
+
 export { router as spotifyRouter };

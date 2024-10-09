@@ -14,6 +14,9 @@ export const coreAPI = createApi({
     getArtist: builder.query({
       query: (artistId) => `/stats/artist/${artistId}`,
     }),
+    getSong: builder.query({
+      query: (songId) => `/stats/track/${songId}`,
+    }),
   }),
 });
 
