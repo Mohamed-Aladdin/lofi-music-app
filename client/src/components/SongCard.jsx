@@ -28,7 +28,7 @@ const SongCard = ({ song, i, activeSong, isPlaying, data }) => {
           />
         </div>
         <img
-          src={song.images?.coverart}
+          src={song.track.album.images[0]?.url}
           alt="song_img"
           className="w-full h-full rounded-lg"
         />
@@ -36,17 +36,17 @@ const SongCard = ({ song, i, activeSong, isPlaying, data }) => {
 
       <div className="mt-4 flex flex-col">
         <p className="semi-bold text-lg text-white truncate">
-          <Link to={`/songs/${song?.key}`}>{song.title}</Link>
+          <Link to={`/songs/${song?.track.id}`}>{song.track.name}</Link>
         </p>
         <p className="text-sm truncate text-gray-300 mt-1">
           <Link
             to={
-              song.artists
-                ? `/artists/${song?.artists[0]?.adamid}`
+              song.track.artists
+                ? `/artists/${song?.track.artists[0]?.id}`
                 : '/top-artists'
             }
           >
-            {song.subtitle}
+            {song.track.artists.map((artist) => artist.name).join(', ')}
           </Link>
         </p>
       </div>

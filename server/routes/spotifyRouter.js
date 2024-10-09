@@ -11,4 +11,11 @@ router.get(
   SpotifyController.getTopCharts
 );
 
+router.get(
+  '/artists/:id',
+  verifyUserFromToken,
+  verifySpotifyToken,
+  SpotifyController.getArtist
+);
+
 export { router as spotifyRouter };
