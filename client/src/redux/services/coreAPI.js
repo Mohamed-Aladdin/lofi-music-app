@@ -17,7 +17,15 @@ export const coreAPI = createApi({
     getSong: builder.query({
       query: (songId) => `/stats/track/${songId}`,
     }),
+    searchSongs: builder.query({
+      query: (searchTerm) => `/stats/search/${searchTerm}`,
+    }),
   }),
 });
 
-export const { useGetTopChartsQuery, useGetArtistQuery } = coreAPI;
+export const {
+  useGetTopChartsQuery,
+  useGetArtistQuery,
+  useGetSongQuery,
+  useSearchSongsQuery,
+} = coreAPI;

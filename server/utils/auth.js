@@ -73,7 +73,7 @@ export const getSpotifyToken = async () => {
     if (!error && response.statusCode === 200) {
       const access_token = body.access_token;
 
-      await redisClient.set('spotify', access_token, 60 * 60);
+      await redisClient.set('spotify', access_token, 60 * 55);
       return access_token;
     }
     return null;
