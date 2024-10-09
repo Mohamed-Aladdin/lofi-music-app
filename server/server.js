@@ -5,6 +5,7 @@ import { authRouter } from './routes/authRouter';
 import { usersRouter } from './routes/usersRouter';
 import { playlistsRouter } from './routes/playlistsRouter';
 import { songsRouter } from './routes/songsRouter';
+import { spotifyRouter } from './routes/spotifyRouter';
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ app.use('/auth', authRouter);
 app.use('/users', usersRouter);
 app.use('/playlists', playlistsRouter);
 app.use('/songs', songsRouter);
+app.use('/stats', spotifyRouter);
 
 const PORT = process.env.PORT || 5000;
 

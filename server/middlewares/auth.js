@@ -30,6 +30,6 @@ export const verifySpotifyToken = async (req, res, next) => {
   if (!token) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
-  req.token = token;
+  req.token = `Bearer ${token}`;
   next();
 };

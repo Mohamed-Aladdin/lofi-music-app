@@ -64,7 +64,7 @@ export const getSpotifyToken = async () => {
         ).toString('base64'),
     },
     form: {
-      grant_type: 'refresh_token',
+      grant_type: 'client_credentials',
     },
     json: true,
   };
