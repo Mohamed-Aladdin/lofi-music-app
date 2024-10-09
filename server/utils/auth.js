@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs';
+import { request } from 'express';
 import dbClient from './db';
 import redisClient from './redis';
 
@@ -17,7 +18,7 @@ export const getUserFromAuthHeaders = async (req) => {
     const token = Buffer.from(authParts[1], 'base64').toString();
     const [email, password] = token.split(':', 2);
     const foundUser = await dbClient.getUserPassword(email);
-    
+
     if (!bcrypt.compareSync(password, foundUser.password)) {
       return null;
     }
@@ -42,4 +43,32 @@ export const getUserFromTokenHeaders = async (req) => {
   const user = await dbClient.getUserById(userId);
 
   return user || null;
+};
+
+export const getSpotifyToken = async () => {
+  const authOptions = {
+    url: 'https://accounts.spotify.com/api/token',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization:
+        'Basic ' +
+        new Buffer.from(
+          process.env.SPOTIFY_CLIENT_ID +
+            ':' +
+            process.env.SPOTIFY_CLIENT_SECRET
+        ).toString('base64'),
+    },
+    form: {
+      grant_type: 'refresh_token',
+    },
+    json: true,
+  };
+
+  await request.post(authOptions, function (error, response, body) {
+    if (!error && response.statusCode === 200) {
+      const access_token = body.access_token;
+      return access_token;
+    }
+    return null;
+  });
 };

@@ -1,4 +1,8 @@
-import { getUserFromAuthHeaders, getUserFromTokenHeaders } from '../utils/auth';
+import {
+  getUserFromAuthHeaders,
+  getUserFromTokenHeaders,
+  getSpotifyToken,
+} from '../utils/auth';
 
 export const verifyUserFromAuth = async (req, res, next) => {
   const user = await getUserFromAuthHeaders(req);
@@ -17,5 +21,15 @@ export const verifyUserFromToken = async (req, res, next) => {
     return res.status(401).json({ error: 'Unauthorized' });
   }
   req.user = user;
+  next();
+};
+
+export const verifySpotifyToken = async (req, res, next) => {
+  const token = await getSpotifyToken();
+
+  if (!token) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  req.token = token;
   next();
 };
