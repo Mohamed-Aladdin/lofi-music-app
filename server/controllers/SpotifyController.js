@@ -97,4 +97,85 @@ export default class SpotifyController {
       console.error({ error: err.stack });
     }
   }
+
+  static async getSongsByGenre(req, res) {
+    try {
+      const headers = { Authorization: req.token };
+
+      request.get(
+        `${
+          SpotifyController.baseUrl
+        }/recommendations?seed_genres=${encodeURIComponent(
+          req.params.genre
+        )}&limit=20`,
+        {
+          headers,
+          json: true,
+        },
+        (error, _response, body) => {
+          if (error) {
+            console.error({ error: error.message });
+            return res.status(500).json({ error: 'Failed to fetch data' });
+          }
+          return res.status(200).json(body);
+        }
+      );
+    } catch (err) {
+      console.error({ error: err.stack });
+    }
+  }
+
+  static async getRelatedSongs(req, res) {
+    try {
+      const headers = { Authorization: req.token };
+
+      request.get(
+        `${
+          SpotifyController.baseUrl
+        }/recommendations?seed_tracks=${encodeURIComponent(
+          req.params.id
+        )}&limit=20`,
+        {
+          headers,
+          json: true,
+        },
+        (error, _response, body) => {
+          if (error) {
+            console.error({ error: error.message });
+            return res.status(500).json({ error: 'Failed to fetch data' });
+          }
+          return res.status(200).json(body);
+        }
+      );
+    } catch (err) {
+      console.error({ error: err.stack });
+    }
+  }
+
+  static async getSongsByCountry(req, res) {
+    try {
+      const headers = { Authorization: req.token };
+
+      request.get(
+        `${
+          SpotifyController.baseUrl
+        }/browse/new-releases?country=${encodeURIComponent(
+          req.params.countryCode
+        )}&limit=20`,
+        {
+          headers,
+          json: true,
+        },
+        (error, _response, body) => {
+          if (error) {
+            console.error({ error: error.message });
+            return res.status(500).json({ error: 'Failed to fetch data' });
+          }
+          return res.status(200).json(body);
+        }
+      );
+    } catch (err) {
+      console.error({ error: err.stack });
+    }
+  }
 }

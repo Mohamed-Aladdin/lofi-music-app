@@ -32,4 +32,25 @@ router.get(
   SpotifyController.searchSongs
 );
 
+router.get(
+  '/tracks/genres/:genre',
+  verifyUserFromToken,
+  verifySpotifyToken,
+  SpotifyController.getSongsByGenre
+);
+
+router.get(
+  '/tracks/related/:id',
+  verifyUserFromToken,
+  verifySpotifyToken,
+  SpotifyController.getRelatedSongs
+);
+
+router.get(
+  '/tracks/country/:countryCode',
+  verifyUserFromToken,
+  verifySpotifyToken,
+  SpotifyController.getRelatedSongs
+);
+
 export { router as spotifyRouter };
