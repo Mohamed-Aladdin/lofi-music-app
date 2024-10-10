@@ -5,7 +5,7 @@ export const coreAPI = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: 'http://localhost:5000',
     prepareHeaders: (headers) => {
-      headers.set('x-token', '79c1cc3d-9e6b-4c1d-a07d-c7bdb64488b4');
+      headers.set('x-token', '58e2c56b-8cac-42eb-8f19-acb0af53ad18');
       return headers;
     },
   }),
@@ -18,7 +18,13 @@ export const coreAPI = createApi({
       query: (songId) => `/stats/track/${songId}`,
     }),
     searchSongs: builder.query({
-      query: (searchTerm) => `/stats/search/${searchTerm}`,
+      query: () => '/stats/search/',
+    }),
+    getSongsByGenre: builder.query({
+      query: (genre) => `/stats/tracks/genres/${genre}`,
+    }),
+    getRelatedSongs: builder.query({
+      query: (songId) => `/stats/tracks/related/${songId}`,
     }),
   }),
 });
@@ -28,4 +34,6 @@ export const {
   useGetArtistQuery,
   useGetSongQuery,
   useSearchSongsQuery,
+  useGetSongsByGenreQuery,
+  useGetRelatedSongsQuery,
 } = coreAPI;

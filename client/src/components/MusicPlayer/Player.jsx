@@ -28,11 +28,10 @@ const Player = ({
   useEffect(() => {
     ref.current.currentTime = seekTime;
   }, [seekTime]);
-  console.log(activeSong?.track?.uri);
 
   return (
     <audio
-      src={activeSong?.track?.uri}
+      src={activeSong?.track?.preview_url}
       ref={ref}
       loop={repeat}
       onEnded={onEnded}
