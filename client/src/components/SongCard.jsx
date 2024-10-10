@@ -6,6 +6,7 @@ import { playPause, setActiveSong } from '../redux/features/playerSlice';
 
 const SongCard = ({ song, i, activeSong, isPlaying, data }) => {
   const dispatch = useDispatch();
+
   const handlePauseClick = () => {
     dispatch(playPause(false));
   };
@@ -34,7 +35,7 @@ const SongCard = ({ song, i, activeSong, isPlaying, data }) => {
           />
         </div>
         <img
-          src={song.track.album.images[0]?.url}
+          src={song.track?.album?.images[0]?.url}
           alt="song_img"
           className="w-full h-full rounded-lg"
         />
