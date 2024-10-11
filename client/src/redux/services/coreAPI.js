@@ -15,7 +15,7 @@ export const coreAPI = createApi({
       query: (artistId) => `/stats/artist/${artistId}`,
     }),
     getSong: builder.query({
-      query: ({ songId }) => `/stats/track/${songId}`,
+      query: ({ songid }) => `/stats/tracks/${songid}`,
     }),
     searchSongs: builder.query({
       query: () => '/stats/search/',
@@ -24,7 +24,7 @@ export const coreAPI = createApi({
       query: (genre) => `/stats/tracks/genres/${genre}`,
     }),
     getRelatedSongs: builder.query({
-      query: ({ songId }) => `/stats/tracks/related/${songId}`,
+      query: ({ songid }) => `/stats/tracks/related/${songid}`,
     }),
   }),
 });

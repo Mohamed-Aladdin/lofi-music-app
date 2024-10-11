@@ -83,7 +83,7 @@ const TopPlay = () => {
         <div className="mt-4 flex flex-col gap-1">
           {topPlays?.map((song, i) => (
             <TopChartCard
-              key={song.key}
+              key={song.track.id}
               song={song}
               i={i}
               isPlaying={isPlaying}
@@ -114,7 +114,7 @@ const TopPlay = () => {
         >
           {topPlays?.map((song, i) => (
             <SwiperSlide
-              key={song.key}
+              key={song.track.id}
               style={{ width: '25%', height: 'auto' }}
               className="shadow-lg rounded-full animate-slideright"
             >

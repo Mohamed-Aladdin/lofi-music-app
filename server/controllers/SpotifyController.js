@@ -52,20 +52,59 @@ export default class SpotifyController {
 
   static async getSong(req, res) {
     try {
-      const headers = { Authorization: req.token };
+      const spotifyHeaders = { Authorization: req.token };
 
       request.get(
-        `${SpotifyController.baseUrl}/tracks/${req.params.id}`,
+        `${SpotifyController.baseUrl}/tracks/${encodeURIComponent(
+          req.params.id
+        )}`,
         {
-          headers,
+          headers: spotifyHeaders,
           json: true,
         },
-        (error, _response, body) => {
-          if (error) {
-            console.error({ error: error.stack });
-            return res.status(500).json({ error: 'Failed to fetch data' });
+        (spotifyError, _spotifyResponse, spotifyBody) => {
+          if (spotifyError) {
+            console.error({ error: spotifyError.stack });
+            return res
+              .status(500)
+              .json({ error: 'Failed to fetch spotify data' });
           }
-          return res.status(200).json(body);
+
+          request.get(
+            `https://api.musixmatch.com/ws/1.1/track.search?q_track=${encodeURIComponent(
+              spotifyBody.name
+            )}&q_artist=${encodeURIComponent(
+              spotifyBody.artists[0].name
+            )}&apikey=${process.env.MusixMatch_API_KEY}`,
+            { json: true },
+            (mError, _mResponse, mBody) => {
+              if (mError) {
+                console.error({ error: mError.stack });
+                return res
+                  .status(500)
+                  .json({ error: 'Failed to fetch initial musixmatch data' });
+              }
+
+              request.get(
+                `https://api.musixmatch.com/ws/1.1/track.lyrics.get?track_id=${encodeURIComponent(
+                  mBody.message.body.track_list[0].track.track_id
+                )}&apikey=${process.env.MusixMatch_API_KEY}`,
+                { json: true },
+                (fError, _fResponse, fBody) => {
+                  if (fError) {
+                    console.error({ error: fError.stack });
+                    return res.status(500).json({
+                      error: 'Failed to fetch musixmatch data',
+                    });
+                  }
+                  return res.status(200).json({
+                    spotify: spotifyBody,
+                    lyrics: fBody.message.body.lyrics.lyrics_body.split('*')[0],
+                  });
+                }
+              );
+            }
+          );
         }
       );
     } catch (err) {
