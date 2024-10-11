@@ -5,7 +5,7 @@ import { verifyUserFromToken, verifySpotifyToken } from '../middlewares/auth';
 const router = express.Router();
 
 router.get(
-  '/topCharts',
+  '/top-charts',
   verifyUserFromToken,
   verifySpotifyToken,
   SpotifyController.getTopCharts

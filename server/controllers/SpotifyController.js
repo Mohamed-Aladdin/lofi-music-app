@@ -14,11 +14,44 @@ export default class SpotifyController {
           headers,
           json: true,
         },
-        (error, _response, body) => {
+        async (error, _response, body) => {
           if (error) {
             console.error({ error: error.stack });
             return res.status(500).json({ error: 'Failed to fetch data' });
           }
+          const artistsList = body.tracks.items.slice(0, 5).map((item) => {
+            return new Promise((resolve, reject) => {
+              request.get(
+                `${SpotifyController.baseUrl}/artists/${encodeURIComponent(
+                  item.track.artists[0].id
+                )}`,
+                {
+                  headers,
+                  json: true,
+                },
+                (aError, _aResponse, aBody) => {
+                  if (aError) {
+                    console.error({ error: aError.stack });
+                    reject('Failed to fetch data');
+                  } else {
+                    resolve(aBody.images[0].url);
+                  }
+                }
+              );
+            });
+          });
+
+          const artistsImages = await Promise.all(artistsList);
+          // const items = Array.from({ length: 50 }, (_, index) => ({
+          //   id: index + 1,
+          //   name: `Item ${index + 1}`,
+          // }));
+
+          // Insert each image URL into the first 5 items of the items list
+          for (let i = 0; i < artistsImages.length; i++) {
+            body.tracks.items[i].track.artists[0].image = artistsImages[i]; // Assign image URL to the item
+          }
+
           return res.status(200).json(body.tracks.items);
         }
       );
@@ -32,7 +65,9 @@ export default class SpotifyController {
       const headers = { Authorization: req.token };
 
       request.get(
-        `${SpotifyController.baseUrl}/artists/${req.params.id}`,
+        `${SpotifyController.baseUrl}/artists/${encodeURIComponent(
+          req.params.id
+        )}`,
         {
           headers,
           json: true,
