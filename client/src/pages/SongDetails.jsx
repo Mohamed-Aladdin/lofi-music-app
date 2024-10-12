@@ -13,12 +13,12 @@ const SongDetails = () => {
   );
   return (
     <div className="flex flex-col">
-      {/* <DetailsHeader artistId={artistId} songData={songData} /> */}
+      <DetailsHeader artistId="" songData={songData} />
       <div className="mb-10">
         <h2 className="text-white text-3xl font-bold">Lyrics:</h2>
         <div className="mt-5">
           {songData?.lyrics ? (
-            songData?.lyrics?.split('/n').map((line, i) => (
+            songData?.lyrics?.split('\n').map((line, i) => (
               <p
                 key={`lyrics-${line}-${i}`}
                 className="text-gray-400 text-base my-1"

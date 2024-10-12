@@ -87,14 +87,14 @@ export default class SpotifyController {
 
   static async getSong(req, res) {
     try {
-      const spotifyHeaders = { Authorization: req.token };
+      const headers = { Authorization: req.token };
 
       request.get(
         `${SpotifyController.baseUrl}/tracks/${encodeURIComponent(
           req.params.id
         )}`,
         {
-          headers: spotifyHeaders,
+          headers,
           json: true,
         },
         (spotifyError, _spotifyResponse, spotifyBody) => {
@@ -106,36 +106,53 @@ export default class SpotifyController {
           }
 
           request.get(
-            `https://api.musixmatch.com/ws/1.1/track.search?q_track=${encodeURIComponent(
-              spotifyBody.name
-            )}&q_artist=${encodeURIComponent(
-              spotifyBody.artists[0].name
-            )}&apikey=${process.env.MusixMatch_API_KEY}`,
-            { json: true },
-            (mError, _mResponse, mBody) => {
-              if (mError) {
-                console.error({ error: mError.stack });
-                return res
-                  .status(500)
-                  .json({ error: 'Failed to fetch initial musixmatch data' });
+            `${SpotifyController.baseUrl}/artists/${encodeURIComponent(
+              spotifyBody.artists[0].id
+            )}`,
+            {
+              headers,
+              json: true,
+            },
+            (aError, _aResponse, aBody) => {
+              if (aError) {
+                console.error({ error: aError.stack });
+                return res.status(500).json({ error: 'Failed to fetch data' });
               }
-
               request.get(
-                `https://api.musixmatch.com/ws/1.1/track.lyrics.get?track_id=${encodeURIComponent(
-                  mBody.message.body.track_list[0].track.track_id
+                `https://api.musixmatch.com/ws/1.1/track.search?q_track=${encodeURIComponent(
+                  spotifyBody.name
+                )}&q_artist=${encodeURIComponent(
+                  spotifyBody.artists[0].name
                 )}&apikey=${process.env.MusixMatch_API_KEY}`,
                 { json: true },
-                (fError, _fResponse, fBody) => {
-                  if (fError) {
-                    console.error({ error: fError.stack });
+                (mError, _mResponse, mBody) => {
+                  if (mError) {
+                    console.error({ error: mError.stack });
                     return res.status(500).json({
-                      error: 'Failed to fetch musixmatch data',
+                      error: 'Failed to fetch initial musixmatch data',
                     });
                   }
-                  return res.status(200).json({
-                    spotify: spotifyBody,
-                    lyrics: fBody.message.body.lyrics.lyrics_body.split('*')[0],
-                  });
+
+                  request.get(
+                    `https://api.musixmatch.com/ws/1.1/track.lyrics.get?track_id=${encodeURIComponent(
+                      mBody.message.body.track_list[0].track.track_id
+                    )}&apikey=${process.env.MusixMatch_API_KEY}`,
+                    { json: true },
+                    (fError, _fResponse, fBody) => {
+                      if (fError) {
+                        console.error({ error: fError.stack });
+                        return res.status(500).json({
+                          error: 'Failed to fetch musixmatch data',
+                        });
+                      }
+                      return res.status(200).json({
+                        spotify: spotifyBody,
+                        genres: aBody.genres,
+                        lyrics:
+                          fBody.message.body.lyrics.lyrics_body.split('*')[0],
+                      });
+                    }
+                  );
                 }
               );
             }
