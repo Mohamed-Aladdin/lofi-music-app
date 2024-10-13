@@ -77,7 +77,24 @@ export default class SpotifyController {
             console.error({ error: error.stack });
             return res.status(500).json({ error: 'Failed to fetch data' });
           }
-          return res.status(200).json(body);
+
+          request.get(
+            `${SpotifyController.baseUrl}/artists/${encodeURIComponent(
+              req.params.id
+            )}/top-tracks`,
+            {
+              headers,
+              json: true,
+            }, (tError, _tResponse, tBody) => {
+              if (tError) {
+                console.error({ error: error.stack });
+                return res.status(500).json({ error: 'Failed to fetch data' });
+              }
+
+              body['tracks'] = tBody.tracks;
+              return res.status(200).json(body);
+            }
+          );
         }
       );
     } catch (err) {

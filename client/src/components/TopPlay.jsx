@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable import/no-unresolved */
 import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -39,7 +41,7 @@ const TopChartCard = ({
     <PlayPause
       isPlaying={isPlaying}
       activeSong={activeSong}
-      song={song}
+      song={song.track}
       handlePause={handlePauseClick}
       handlePlay={handlePlayClick}
     />
@@ -63,7 +65,7 @@ const TopPlay = () => {
   };
 
   const handlePlayClick = (song, i) => {
-    dispatch(setActiveSong({ song, data, i }));
+    dispatch(setActiveSong({ song: song.track, data, i }));
     dispatch(playPause(true));
   };
 

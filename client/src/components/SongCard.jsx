@@ -12,7 +12,7 @@ const SongCard = ({ song, i, activeSong, isPlaying, data }) => {
   };
 
   const handlePlayClick = () => {
-    dispatch(setActiveSong({ song, data, i }));
+    dispatch(setActiveSong({ song: song.track, data, i }));
     dispatch(playPause(true));
   };
 
@@ -21,13 +21,13 @@ const SongCard = ({ song, i, activeSong, isPlaying, data }) => {
       <div className="relative w-full h-56 group">
         <div
           className={`absolute inset-0 justify-center items-center bg-black bg-opacity-50 group-hover:flex ${
-            activeSong?.track?.name === song.track?.name
+            activeSong?.name === song.track?.name
               ? 'flex bg-black bg-opacity-70'
               : 'hidden'
           }`}
         >
           <PlayPause
-            song={song}
+            song={song.track}
             activeSong={activeSong}
             isPlaying={isPlaying}
             handlePause={handlePauseClick}

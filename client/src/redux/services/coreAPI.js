@@ -5,14 +5,14 @@ export const coreAPI = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: 'http://localhost:5000',
     prepareHeaders: (headers) => {
-      headers.set('x-token', '010d50c2-937e-4848-bf8a-e54b36cb4a74');
+      headers.set('x-token', 'caba7808-6603-40a3-8aa3-7aa666177e78');
       return headers;
     },
   }),
   endpoints: (builder) => ({
     getTopCharts: builder.query({ query: () => '/stats/top-charts' }),
     getArtist: builder.query({
-      query: (artistId) => `/stats/artist/${artistId}`,
+      query: (artistId) => `/stats/artists/${artistId}`,
     }),
     getSong: builder.query({
       query: ({ songid }) => `/stats/tracks/${songid}`,

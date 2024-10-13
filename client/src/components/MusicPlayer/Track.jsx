@@ -8,18 +8,18 @@ const Track = ({ isPlaying, isActive, activeSong }) => (
       } hidden sm:block h-16 w-16 mr-4`}
     >
       <img
-        src={activeSong?.track.album.images[0]?.url}
+        src={activeSong?.album?.images[0]?.url}
         alt="cover art"
         className="rounded-full"
       />
     </div>
     <div className="w-[50%]">
       <p className="truncate text-white font-bold text-lg">
-        {activeSong?.track.name ? activeSong?.track.name : 'No active Song'}
+        {activeSong?.name ? activeSong?.name : 'No active Song'}
       </p>
       <p className="truncate text-gray-300">
-        {activeSong?.track.artists[0]?.name
-          ? activeSong?.track.artists[0]?.name
+        {activeSong?.artists[0]?.name
+          ? activeSong?.artists[0]?.name
           : 'No active Song'}
       </p>
     </div>

@@ -31,7 +31,7 @@ const Player = ({
 
   return (
     <audio
-      src={activeSong?.track?.preview_url}
+      src={activeSong?.preview_url}
       ref={ref}
       loop={repeat}
       onEnded={onEnded}
