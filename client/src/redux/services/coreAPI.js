@@ -26,6 +26,9 @@ export const coreAPI = createApi({
     getRelatedSongs: builder.query({
       query: ({ songid }) => `/stats/tracks/related/${songid}`,
     }),
+    getSongsByCountry: builder.query({
+      query: () => '/stats/track/country',
+    }),
   }),
 });
 
@@ -36,4 +39,5 @@ export const {
   useSearchSongsQuery,
   useGetSongsByGenreQuery,
   useGetRelatedSongsQuery,
+  useGetSongsByCountryQuery,
 } = coreAPI;

@@ -47,10 +47,10 @@ router.get(
 );
 
 router.get(
-  '/tracks/country/:countryCode',
+  '/track/country',
   verifyUserFromToken,
   verifySpotifyToken,
-  SpotifyController.getRelatedSongs
+  SpotifyController.getSongsByCountry
 );
 
 export { router as spotifyRouter };

@@ -85,7 +85,8 @@ export default class SpotifyController {
             {
               headers,
               json: true,
-            }, (tError, _tResponse, tBody) => {
+            },
+            (tError, _tResponse, tBody) => {
               if (tError) {
                 console.error({ error: error.stack });
                 return res.status(500).json({ error: 'Failed to fetch data' });
@@ -135,6 +136,7 @@ export default class SpotifyController {
                 console.error({ error: aError.stack });
                 return res.status(500).json({ error: 'Failed to fetch data' });
               }
+
               request.get(
                 `https://api.musixmatch.com/ws/1.1/track.search?q_track=${encodeURIComponent(
                   spotifyBody.name
@@ -265,21 +267,51 @@ export default class SpotifyController {
       const headers = { Authorization: req.token };
 
       request.get(
-        `${
-          SpotifyController.baseUrl
-        }/browse/new-releases?country=${encodeURIComponent(
-          req.params.countryCode
-        )}&limit=20`,
-        {
-          headers,
-          json: true,
-        },
-        (error, _response, body) => {
-          if (error) {
-            console.error({ error: error.message });
-            return res.status(500).json({ error: 'Failed to fetch data' });
+        `https://api.geoapify.com/v1/ipinfo?apiKey=${encodeURIComponent(
+          process.env.GEOAPIFY_API_KEY
+        )}`,
+        { json: true },
+        (gError, _gResponse, gBody) => {
+          if (gError) {
+            console.error({ error: gError.message });
+            return res.status(500).json({ error: 'Failed to fetch location' });
           }
-          return res.status(200).json(body);
+
+          request.get(
+            `${
+              SpotifyController.baseUrl
+            }/browse/featured-playlists?locale=${encodeURIComponent(
+              gBody.country.iso_code
+            )}&limit=10`,
+            {
+              headers,
+              json: true,
+            },
+            (sError, _sResponse, sBody) => {
+              if (sError) {
+                console.error({ error: sError.message });
+                return res.status(500).json({ error: 'Failed to fetch playlist' });
+              }
+
+              const idx = Math.floor(Math.random() * sBody.playlists.items.length);
+
+              request.get(
+                `${SpotifyController.baseUrl}/playlists/${encodeURIComponent(sBody.playlists.items[idx].id)}`,
+                {
+                  headers,
+                  json: true,
+                }, (error, _response, body) => {
+                  if (error) {
+                    console.error({ error: error.message });
+                    return res
+                      .status(500)
+                      .json({ error: 'Failed to fetch data' });
+                  }
+                  return res.status(200).json(body.tracks.items);
+                }
+              );
+            }
+          );
         }
       );
     } catch (err) {
