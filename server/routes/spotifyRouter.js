@@ -32,7 +32,7 @@ router.get(
 );
 
 router.get(
-  '/search',
+  '/track/search/:searchTerm',
   verifyUserFromToken,
   verifySpotifyToken,
   SpotifyController.searchSongs

@@ -21,7 +21,7 @@ export const coreAPI = createApi({
       query: ({ songid }) => `/stats/tracks/${songid}`,
     }),
     searchSongs: builder.query({
-      query: () => '/stats/search/',
+      query: (searchTerm) => `/stats/track/search/${searchTerm}`,
     }),
     getSongsByGenre: builder.query({
       query: (genre) => `/stats/tracks/genres/${genre}`,

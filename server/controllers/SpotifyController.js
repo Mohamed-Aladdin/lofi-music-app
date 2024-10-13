@@ -234,7 +234,7 @@ export default class SpotifyController {
 
       request.get(
         `${SpotifyController.baseUrl}/search?q=${encodeURIComponent(
-          req.body.searchTerm
+          req.params.searchTerm
         )}&type=track,artist`,
         {
           headers,
