@@ -60,6 +60,51 @@ export default class SpotifyController {
     }
   }
 
+  static async getTopArtists(req, res) {
+    try {
+      const headers = { Authorization: req.token };
+
+      request.get(
+        `${SpotifyController.baseUrl}/playlists/37i9dQZF1DXcBWIGoYBM5M`,
+        {
+          headers,
+          json: true,
+        },
+        async (error, _response, body) => {
+          if (error) {
+            console.error({ error: error.stack });
+            return res.status(500).json({ error: 'Failed to fetch data' });
+          }
+
+          const artistsIds = body.tracks.items.map(
+            (item) => item.track.artists[0].id
+          );
+          const uniqueIds = [...new Set(artistsIds)];
+
+          request.get(
+            `${SpotifyController.baseUrl}/artists?ids=${encodeURIComponent(
+              uniqueIds.join(',')
+            )}`,
+            {
+              headers,
+              json: true,
+            },
+            (cError, _cResponse, cBody) => {
+              if (cError) {
+                console.error({ error: cError.stack });
+                return res.status(500).json({ error: 'Failed to fetch data' });
+              }
+
+              return res.status(200).json(cBody.artists);
+            }
+          );
+        }
+      );
+    } catch (err) {
+      console.error({ error: err.stack });
+    }
+  }
+
   static async getArtist(req, res) {
     try {
       const headers = { Authorization: req.token };
@@ -290,17 +335,24 @@ export default class SpotifyController {
             (sError, _sResponse, sBody) => {
               if (sError) {
                 console.error({ error: sError.message });
-                return res.status(500).json({ error: 'Failed to fetch playlist' });
+                return res
+                  .status(500)
+                  .json({ error: 'Failed to fetch playlist' });
               }
 
-              const idx = Math.floor(Math.random() * sBody.playlists.items.length);
+              const idx = Math.floor(
+                Math.random() * sBody.playlists.items.length
+              );
 
               request.get(
-                `${SpotifyController.baseUrl}/playlists/${encodeURIComponent(sBody.playlists.items[idx].id)}`,
+                `${SpotifyController.baseUrl}/playlists/${encodeURIComponent(
+                  sBody.playlists.items[idx].id
+                )}`,
                 {
                   headers,
                   json: true,
-                }, (error, _response, body) => {
+                },
+                (error, _response, body) => {
                   if (error) {
                     console.error({ error: error.message });
                     return res

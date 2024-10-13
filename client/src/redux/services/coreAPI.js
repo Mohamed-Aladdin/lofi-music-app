@@ -14,6 +14,9 @@ export const coreAPI = createApi({
     getArtist: builder.query({
       query: (artistId) => `/stats/artists/${artistId}`,
     }),
+    getTopArtists: builder.query({
+      query: () => '/stats/top-artists',
+    }),
     getSong: builder.query({
       query: ({ songid }) => `/stats/tracks/${songid}`,
     }),
@@ -35,6 +38,7 @@ export const coreAPI = createApi({
 export const {
   useGetTopChartsQuery,
   useGetArtistQuery,
+  useGetTopArtistsQuery,
   useGetSongQuery,
   useSearchSongsQuery,
   useGetSongsByGenreQuery,

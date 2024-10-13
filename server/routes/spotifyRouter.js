@@ -17,6 +17,12 @@ router.get(
   verifySpotifyToken,
   SpotifyController.getArtist
 );
+router.get(
+  '/top-artists/',
+  verifyUserFromToken,
+  verifySpotifyToken,
+  SpotifyController.getTopArtists
+);
 
 router.get(
   '/tracks/:id',
