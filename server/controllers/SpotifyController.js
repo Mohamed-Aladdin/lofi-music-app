@@ -262,7 +262,7 @@ export default class SpotifyController {
           SpotifyController.baseUrl
         }/recommendations?seed_genres=${encodeURIComponent(
           req.params.genre
-        )}&limit=20`,
+        )}&limit=50`,
         {
           headers,
           json: true,
@@ -272,7 +272,7 @@ export default class SpotifyController {
             console.error({ error: error.message });
             return res.status(500).json({ error: 'Failed to fetch data' });
           }
-          return res.status(200).json(body);
+          return res.status(200).json(body.tracks);
         }
       );
     } catch (err) {
@@ -364,6 +364,30 @@ export default class SpotifyController {
               );
             }
           );
+        }
+      );
+    } catch (err) {
+      console.error({ error: err.stack });
+    }
+  }
+
+  static async getGenres(req, res) {
+    try {
+      const headers = { Authorization: req.token };
+
+      request.get(
+        `${SpotifyController.baseUrl}/recommendations/available-genre-seeds`,
+        {
+          headers,
+          json: true,
+        },
+        (error, _response, body) => {
+          if (error) {
+            console.error({ error: error.stack });
+            return res.status(500).json({ error: 'Failed to fetch genres' });
+          }
+
+          return res.status(200).json(body.genres);
         }
       );
     } catch (err) {

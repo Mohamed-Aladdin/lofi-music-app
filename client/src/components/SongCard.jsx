@@ -12,7 +12,7 @@ const SongCard = ({ song, i, activeSong, isPlaying, data }) => {
   };
 
   const handlePlayClick = () => {
-    dispatch(setActiveSong({ song: song.track, data, i }));
+    dispatch(setActiveSong({ song, data, i }));
     dispatch(playPause(true));
   };
 
@@ -21,13 +21,13 @@ const SongCard = ({ song, i, activeSong, isPlaying, data }) => {
       <div className="relative w-full h-56 group">
         <div
           className={`absolute inset-0 justify-center items-center bg-black bg-opacity-50 group-hover:flex ${
-            activeSong?.name === song.track?.name
+            activeSong?.name === song?.name
               ? 'flex bg-black bg-opacity-70'
               : 'hidden'
           }`}
         >
           <PlayPause
-            song={song.track}
+            song={song}
             activeSong={activeSong}
             isPlaying={isPlaying}
             handlePause={handlePauseClick}
@@ -35,7 +35,7 @@ const SongCard = ({ song, i, activeSong, isPlaying, data }) => {
           />
         </div>
         <img
-          src={song.track?.album?.images[0]?.url}
+          src={song?.album?.images[0]?.url}
           alt="song_img"
           className="w-full h-full rounded-lg"
         />
@@ -43,17 +43,17 @@ const SongCard = ({ song, i, activeSong, isPlaying, data }) => {
 
       <div className="mt-4 flex flex-col">
         <p className="semi-bold text-lg text-white truncate">
-          <Link to={`/songs/${song?.track?.id}`}>{song.track.name}</Link>
+          <Link to={`/songs/${song?.id}`}>{song?.name}</Link>
         </p>
         <p className="text-sm truncate text-gray-300 mt-1">
           <Link
             to={
-              song.track.artists
-                ? `/artists/${song?.track?.artists[0]?.id}`
+              song?.artists
+                ? `/artists/${song?.artists[0]?.id}`
                 : '/top-artists'
             }
           >
-            {song.track.artists.map((artist) => artist.name).join(', ')}
+            {song?.artists?.map((artist) => artist.name).join(', ')}
           </Link>
         </p>
       </div>

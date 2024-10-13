@@ -59,4 +59,11 @@ router.get(
   SpotifyController.getSongsByCountry
 );
 
+router.get(
+  '/genres',
+  verifyUserFromToken,
+  verifySpotifyToken,
+  SpotifyController.getGenres
+);
+
 export { router as spotifyRouter };

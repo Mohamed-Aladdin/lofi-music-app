@@ -32,6 +32,9 @@ export const coreAPI = createApi({
     getSongsByCountry: builder.query({
       query: () => '/stats/track/country',
     }),
+    getAllGenres: builder.query({
+      query: () => '/stats/genres',
+    }),
   }),
 });
 
@@ -44,4 +47,5 @@ export const {
   useGetSongsByGenreQuery,
   useGetRelatedSongsQuery,
   useGetSongsByCountryQuery,
+  useGetAllGenresQuery,
 } = coreAPI;
