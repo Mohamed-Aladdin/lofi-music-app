@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const coreAPI = createApi({
@@ -5,7 +6,7 @@ export const coreAPI = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: 'http://localhost:5000',
     prepareHeaders: (headers) => {
-      headers.set('x-token', 'caba7808-6603-40a3-8aa3-7aa666177e78');
+      headers.set('x-token', window.localStorage.getItem('x-token'));
       return headers;
     },
   }),
@@ -35,6 +36,36 @@ export const coreAPI = createApi({
     getAllGenres: builder.query({
       query: () => '/stats/genres',
     }),
+
+    registerUser: builder.mutation({
+      query: (userData) => ({
+        url: '/users/register',
+        method: 'POST',
+        body: userData,
+      }),
+    }),
+    authenticateUser: builder.mutation({
+      query: (userCreds) => ({
+        url: '/auth/login',
+        method: 'POST',
+        body: userCreds,
+        headers: {
+          Authorization: `Basic ${btoa(
+            `${userCreds.email}:${userCreds.password}`
+          )}`,
+          'Content-Type': 'application/json',
+        },
+      }),
+    }),
+    logoutUser: builder.mutation({
+      query: () => ({
+        url: '/auth/logout',
+        method: 'DELETE',
+        headers: {
+          'x-token': window.localStorage.getItem('x-token'),
+        },
+      }),
+    }),
   }),
 });
 
@@ -48,4 +79,7 @@ export const {
   useGetRelatedSongsQuery,
   useGetSongsByCountryQuery,
   useGetAllGenresQuery,
+  useRegisterUserMutation,
+  useAuthenticateUserMutation,
+  useLogoutUserMutation,
 } = coreAPI;

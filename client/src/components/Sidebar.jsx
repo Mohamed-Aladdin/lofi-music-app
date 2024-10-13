@@ -1,18 +1,30 @@
+/* eslint-disable no-unused-expressions */
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-console */
+/* eslint-disable no-alert */
 import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { HiOutlineMenu } from 'react-icons/hi';
 import { RiCloseLine } from 'react-icons/ri';
 import { logo } from '../assets';
 import { links } from '../assets/constants';
+import { useLogoutUserMutation } from '../redux/services/coreAPI';
 
-const NavLinks = ({ handleClick }) => (
+const NavLinks = ({ handleClick, handleLogout }) => (
   <div className="mt-10">
     {links.map((link) => (
       <NavLink
         key={link.name}
         to={link.to}
         className="flex flex-row justify-start items-center my-8 text-sm font-medium text-gray-400 hover:text-cyan-400"
-        onClick={() => handleClick && handleClick()}
+        onClick={(e) => {
+          if (link.name === 'Logout') {
+            e.preventDefault();
+            handleLogout();
+          } else {
+            handleClick && handleClick();
+          }
+        }}
       >
         <link.icon className="w-6 h-6 mr-2" />
         {link.name}
@@ -21,14 +33,29 @@ const NavLinks = ({ handleClick }) => (
   </div>
 );
 
-const Sidebar = () => {
+const Sidebar = ({ onLogout }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [logoutUser] = useLogoutUserMutation();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      window.localStorage.removeItem('userId');
+      window.localStorage.removeItem('x-token');
+      window.localStorage.removeItem('token_expiration');
+      onLogout(!!window.localStorage.getItem('x-token'));
+    } catch (err) {
+      console.error({ error: err.stack });
+      alert('Please try again later.');
+    }
+  };
 
   return (
     <>
       <div className="md:flex hidden flex-col w-[240px] py-10 px-4 bg-[#191624]">
         <img src={logo} alt="logo" className="w-full h-14 object-contain" />
-        <NavLinks />
+        <NavLinks handleLogout={handleLogout} />
       </div>
 
       <div className="absolute md:hidden block top-6 right-3">
@@ -51,7 +78,10 @@ const Sidebar = () => {
         }`}
       >
         <img src={logo} alt="logo" className="w-full h-14 object-contain" />
-        <NavLinks handleClick={() => setMobileMenuOpen(false)} />
+        <NavLinks
+          handleClick={() => setMobileMenuOpen(false)}
+          handleLogout={handleLogout}
+        />
       </div>
     </>
   );

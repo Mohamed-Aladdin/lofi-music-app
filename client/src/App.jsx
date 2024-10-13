@@ -1,8 +1,11 @@
+import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 
 import { Searchbar, Sidebar, MusicPlayer, TopPlay } from './components';
 import {
+  Login,
+  Register,
   ArtistDetails,
   TopArtists,
   AroundYou,
@@ -13,11 +16,33 @@ import {
 } from './pages';
 
 const App = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { activeSong } = useSelector((state) => state.player);
+
+  useEffect(() => {
+    const token = window.localStorage.getItem('x-token');
+    const expiry = window.localStorage.getItem('token_expiration');
+    if (token && Date.now() < expiry) {
+      setIsAuthenticated(true);
+    } else {
+      setIsAuthenticated(false);
+    }
+  }, []);
+
+  if (!isAuthenticated) {
+    return (
+      <Routes>
+        <Route path="/login" element={<Login onLogin={setIsAuthenticated} />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="*" element={<Navigate to="/login" />} />{' '}
+        {/* Redirect if not authenticated */}
+      </Routes>
+    );
+  }
 
   return (
     <div className="relative flex">
-      <Sidebar />
+      <Sidebar onLogout={setIsAuthenticated} />
       <div className="flex-1 flex flex-col bg-gradient-to-br from-black to-[#121286]">
         <Searchbar />
 
