@@ -112,7 +112,7 @@ class DBClient {
   async addSongsToPlaylist(playlistId, songId) {
     return this.playlists.updateOne(
       { _id: playlistId },
-      { $push: { songs: songId } }
+      { $pull: { songs: songId } }
     );
   }
 
@@ -137,26 +137,31 @@ class DBClient {
   }
 
   async addSongToFavorites(userId, songId) {
-    const updatedFavorites = await this.users.updateOne(
+    await this.users.updateOne(
       { _id: userId },
       { $push: { favoritedSongs: songId } }
-    ).favoritedSongs;
+    );
+    const user = await this.users.findOne({ _id: userId });
 
-    return this.songs.find({ _id: { $in: updatedFavorites } });
+    return this.songs.find({ _id: { $in: user.favoritedSongs } });
   }
 
   async deleteSongFromFavorites(userId, songId) {
-    const updatedFavorites = await this.users.updateOne(
+    await this.users.updateOne(
       { _id: userId },
-      { $pop: { favoritedSongs: songId } }
-    ).favoritedSongs;
+      { $pull: { favoritedSongs: songId } }
+    );
+    const user = await this.users.findOne({ _id: userId });
 
-    return this.songs.find({ _id: { $in: updatedFavorites } });
+    return this.songs.find({ _id: { $in: user.favoritedSongs } });
   }
 
   async getFavorites(userId) {
-    const favorites = await this.users.findById(userId).favoritedSongs;
-    return this.songs.find({ _id: { $in: favorites } });
+    const user = await this.users.findById(userId);
+    return {
+      songs: await this.songs.find({ _id: { $in: user.favoritedSongs } }),
+      ids: user.favoritedSongs,
+    };
   }
 
   async addplaylistToFavorites(userId, playlistId) {
@@ -169,7 +174,7 @@ class DBClient {
   async deletePlaylistFromFavorites(userId, playlistId) {
     return this.users.updateOne(
       { _id: userId },
-      { $pop: { favoritedPlaylists: playlistId } }
+      { $pull: { favoritedPlaylists: playlistId } }
     );
   }
 }

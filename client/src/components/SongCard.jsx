@@ -1,11 +1,58 @@
+/* eslint-disable no-console */
+/* eslint-disable no-alert */
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-
+import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
 import PlayPause from './PlayPause';
 import { playPause, setActiveSong } from '../redux/features/playerSlice';
+import {
+  useAddSongToFavoritesMutation,
+  useGetFavoritedSongsQuery,
+  useRemoveSongFromFavoritesMutation,
+} from '../redux/services/coreAPI';
 
 const SongCard = ({ song, i, activeSong, isPlaying, data }) => {
   const dispatch = useDispatch();
+  const [isFavorited, setIsFavorited] = useState(false);
+  const [addSongToFavorites] = useAddSongToFavoritesMutation();
+  const [removeSongFromFavorites] = useRemoveSongFromFavoritesMutation();
+  const { data: favoritedSongsData } = useGetFavoritedSongsQuery();
+
+  useEffect(() => {
+    setIsFavorited(favoritedSongsData?.ids?.includes(song?.id));
+  }, [song.id]);
+
+  const handleFavoriteClick = async () => {
+    if (!isFavorited) {
+      try {
+        const songData = {
+          _id: song?.id,
+          title: song?.name,
+          artist: song?.artists[0]?.name,
+          album: song?.album?.name,
+          duration: song?.duration_ms,
+          thumbnail: song?.album?.images[0]?.url,
+          preview_url: song?.preview_url,
+        };
+
+        await addSongToFavorites(songData).unwrap();
+        setIsFavorited(true);
+      } catch (err) {
+        console.error({ error: err.stack });
+        alert('Please try again later.');
+      }
+    } else {
+      const songid = song?.id;
+      try {
+        await removeSongFromFavorites({ songid });
+        setIsFavorited(false);
+      } catch (err) {
+        console.error({ error: err.stack });
+        alert('Please try again later.');
+      }
+    }
+  };
 
   const handlePauseClick = () => {
     dispatch(playPause(false));
@@ -56,6 +103,20 @@ const SongCard = ({ song, i, activeSong, isPlaying, data }) => {
             {song?.artists?.map((artist) => artist.name).join(', ')}
           </Link>
         </p>
+      </div>
+      {/* Favorite Icon */}
+      <div className="absolute bottom-4 right-4">
+        {isFavorited ? (
+          <AiFillHeart
+            className="w-6 h-6 text-red-500"
+            onClick={handleFavoriteClick}
+          />
+        ) : (
+          <AiOutlineHeart
+            className="w-6 h-6 text-white"
+            onClick={handleFavoriteClick}
+          />
+        )}
       </div>
     </div>
   );

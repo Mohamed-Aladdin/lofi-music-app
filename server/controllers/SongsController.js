@@ -48,19 +48,24 @@ export default class SongsController {
   static async addSongToFavorites(req, res) {
     try {
       const { user } = req;
-      const song = await dbClient.createSong(req.body);
 
-      if (user.favoritedSongs.includes(song._id)) {
+      if (user.favoritedSongs.includes(req.body._id)) {
         return res.status(400).json({ error: 'Already exist' });
       }
+      const foundSong = await dbClient.getSong(req.body._id);
+
+      if (!foundSong) {
+        await dbClient.createSong(req.body);
+      }
+
       const updatedFavorites = await dbClient.addSongToFavorites(
         user._id,
-        song._id
+        req.body._id
       );
 
       return res.status(200).json(updatedFavorites);
     } catch (err) {
-      console.error({ error: err.message });
+      console.error({ error: err.stack });
     }
   }
 
@@ -73,7 +78,7 @@ export default class SongsController {
       );
       return res.status(204).json({ updatedFavorites });
     } catch (err) {
-      console.error({ error: err.message });
+      console.error({ error: err.stack });
     }
   }
 

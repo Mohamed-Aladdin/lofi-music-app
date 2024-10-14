@@ -43,7 +43,7 @@ const Sidebar = ({ onLogout }) => {
       await logoutUser();
       window.localStorage.removeItem('userId');
       window.localStorage.removeItem('x-token');
-      window.localStorage.removeItem('token_expiration');
+      window.localStorage.removeItem('token-expiration');
       onLogout(!!window.localStorage.getItem('x-token'));
     } catch (err) {
       console.error({ error: err.stack });

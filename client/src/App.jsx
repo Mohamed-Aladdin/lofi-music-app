@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Route, Routes, Navigate } from 'react-router-dom';
@@ -16,12 +17,15 @@ import {
 } from './pages';
 
 const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    !!window.localStorage.getItem('x-token')
+  );
   const { activeSong } = useSelector((state) => state.player);
 
   useEffect(() => {
     const token = window.localStorage.getItem('x-token');
-    const expiry = window.localStorage.getItem('token_expiration');
+    const expiry = window.localStorage.getItem('token-expiration');
+
     if (token && Date.now() < expiry) {
       setIsAuthenticated(true);
     } else {

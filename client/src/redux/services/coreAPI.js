@@ -36,6 +36,9 @@ export const coreAPI = createApi({
     getAllGenres: builder.query({
       query: () => '/stats/genres',
     }),
+    getFavoritedSongs: builder.query({
+      query: () => '/songs/favorites',
+    }),
 
     registerUser: builder.mutation({
       query: (userData) => ({
@@ -66,6 +69,25 @@ export const coreAPI = createApi({
         },
       }),
     }),
+    addSongToFavorites: builder.mutation({
+      query: (songData) => ({
+        url: '/songs/favorites',
+        method: 'POST',
+        headers: {
+          'x-token': window.localStorage.getItem('x-token'),
+        },
+        body: songData,
+      }),
+    }),
+    removeSongFromFavorites: builder.mutation({
+      query: ({ songid }) => ({
+        url: `/songs/favorites/${songid}`,
+        method: 'DELETE',
+        headers: {
+          'x-token': window.localStorage.getItem('x-token'),
+        },
+      }),
+    }),
   }),
 });
 
@@ -82,4 +104,7 @@ export const {
   useRegisterUserMutation,
   useAuthenticateUserMutation,
   useLogoutUserMutation,
+  useAddSongToFavoritesMutation,
+  useRemoveSongFromFavoritesMutation,
+  useGetFavoritedSongsQuery,
 } = coreAPI;

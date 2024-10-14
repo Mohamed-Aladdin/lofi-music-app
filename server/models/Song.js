@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 
 const SongSchema = new mongoose.Schema(
   {
+    _id: { type: String, required: true },
     title: { type: String, required: true, trim: true },
     artist: { type: String, required: true, trim: true },
     album: { type: String, required: true, trim: true },
@@ -9,17 +10,15 @@ const SongSchema = new mongoose.Schema(
     thumbnail: {
       type: String,
       required: true,
-      validate: {
-        validator: function (v) {
-          return /^https?:\/\/.+\.(jpg|jpeg|png|gif)$/.test(v); // Basic URL validation
-        },
-        message: (props) => `${props.value} is not a valid thumbnail URL!`,
-      },
+    },
+    preview_url: {
+      type: String,
+      default: '',
     },
     source: {
       type: String,
-      required: true,
       enum: ['Spotify', 'YouTube', 'AppleMusic'],
+      default: 'Spotify',
     },
   },
   { timestamps: true }
