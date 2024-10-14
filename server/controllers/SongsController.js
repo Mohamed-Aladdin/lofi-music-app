@@ -76,6 +76,7 @@ export default class SongsController {
         user._id,
         req.params.id
       );
+
       return res.status(204).json({ updatedFavorites });
     } catch (err) {
       console.error({ error: err.stack });
@@ -90,7 +91,20 @@ export default class SongsController {
       if (!favorites) {
         return res.status(404).json({ error: 'Not found' });
       }
-      return res.status(200).json(favorites);
+
+      const songsList = favorites.songs.map((song) => ({
+        id: song._id,
+        name: song.title,
+        artists: [{ name: song.artist }],
+        album: { name: song.album, images: [{ url: song.thumbnail }] },
+        duration_ms: song.duration,
+        preview_url: song.preview_url,
+      }));
+      const favoriteSongs = {
+        songs: songsList,
+        ids: favorites.ids,
+      };
+      return res.status(200).json(favoriteSongs);
     } catch (err) {
       console.error({ error: err.message });
     }

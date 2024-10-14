@@ -4,6 +4,7 @@ import {
   HiOutlinePhotograph,
   HiOutlineUserGroup,
   HiOutlineLogout,
+  HiHeart,
 } from 'react-icons/hi';
 
 export const genres = [
@@ -28,5 +29,6 @@ export const links = [
   { name: 'Around You', to: '/around-you', icon: HiOutlinePhotograph },
   { name: 'Top Artists', to: '/top-artists', icon: HiOutlineUserGroup },
   { name: 'Top Charts', to: '/top-charts', icon: HiOutlineHashtag },
+  { name: 'Favorites', to: '/favorites', icon: HiHeart },
   { name: 'Logout', to: '/login', icon: HiOutlineLogout },
 ];
