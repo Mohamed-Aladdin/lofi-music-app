@@ -1,10 +1,18 @@
+// import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Error, Loader, SongCard } from '../components';
 import { useGetSongsByCountryQuery } from '../redux/services/coreAPI';
 
-const AroundYou = () => {
+const AroundYou = ({ handleFavorites }) => {
   const { activeSong, isPlaying } = useSelector((state) => state.player);
   const { data, isFetching, error } = useGetSongsByCountryQuery();
+  // const [favorites, setFavorites] = useState([]);
+
+  // useEffect(() => {}, [favorites]);
+
+  // const handleFavorites = (list) => {
+  //   setFavorites(list);
+  // };
 
   if (isFetching) return <Loader title="Loading songs..." />;
   if (error) return <Error />;
@@ -24,6 +32,7 @@ const AroundYou = () => {
             activeSong={activeSong}
             data={data}
             i={i}
+            handleFavorites={handleFavorites}
           />
         ))}
       </div>

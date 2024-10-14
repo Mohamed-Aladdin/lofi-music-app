@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 /* eslint-disable no-console */
 /* eslint-disable no-alert */
 import { useState, useEffect } from 'react';
@@ -8,16 +9,23 @@ import PlayPause from './PlayPause';
 import { playPause, setActiveSong } from '../redux/features/playerSlice';
 import {
   useAddSongToFavoritesMutation,
-  useGetFavoritedSongsQuery,
   useRemoveSongFromFavoritesMutation,
+  useGetFavoritedSongsQuery,
 } from '../redux/services/coreAPI';
 
-const SongCard = ({ song, i, activeSong, isPlaying, data }) => {
+const SongCard = ({
+  song,
+  i,
+  activeSong,
+  isPlaying,
+  data,
+  handleFavorites,
+}) => {
   const dispatch = useDispatch();
-  const [isFavorited, setIsFavorited] = useState(false);
   const [addSongToFavorites] = useAddSongToFavoritesMutation();
   const [removeSongFromFavorites] = useRemoveSongFromFavoritesMutation();
   const { data: favoritedSongsData } = useGetFavoritedSongsQuery();
+  const [isFavorited, setIsFavorited] = useState(false);
 
   useEffect(() => {
     setIsFavorited(favoritedSongsData?.ids?.includes(song?.id));
@@ -36,8 +44,10 @@ const SongCard = ({ song, i, activeSong, isPlaying, data }) => {
           preview_url: song?.preview_url,
         };
 
-        await addSongToFavorites(songData).unwrap();
+        const updatedFavorites = await addSongToFavorites(songData).unwrap();
+
         setIsFavorited(true);
+        handleFavorites(updatedFavorites);
       } catch (err) {
         console.error({ error: err.stack });
         alert('Please try again later.');
@@ -45,8 +55,12 @@ const SongCard = ({ song, i, activeSong, isPlaying, data }) => {
     } else {
       const songid = song?.id;
       try {
-        await removeSongFromFavorites({ songid });
+        const updatedFavorites = await removeSongFromFavorites({
+          songid,
+        }).unwrap();
+
         setIsFavorited(false);
+        handleFavorites(updatedFavorites);
       } catch (err) {
         console.error({ error: err.stack });
         alert('Please try again later.');

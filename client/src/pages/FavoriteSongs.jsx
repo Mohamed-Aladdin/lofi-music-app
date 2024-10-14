@@ -1,10 +1,23 @@
+/* eslint-disable no-unused-expressions */
+// import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Error, Loader, SongCard } from '../components';
 import { useGetFavoritedSongsQuery } from '../redux/services/coreAPI';
 
-const FavoriteSongs = () => {
+const FavoriteSongs = ({ handleFavorites }) => {
   const { activeSong, isPlaying } = useSelector((state) => state.player);
-  const { data, isFetching, error } = useGetFavoritedSongsQuery();
+  const { data, isFetching, error } = useGetFavoritedSongsQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
+
+  // const [favorites, setFavorites] = useState([]);
+
+  // useEffect(() => {
+  // }, [favorites]);
+
+  // const handleFavorites = (list) => {
+  //   setFavorites(list);
+  // };
 
   if (isFetching) return <Loader title="Loading your songs..." />;
   if (error) return <Error />;
@@ -24,6 +37,7 @@ const FavoriteSongs = () => {
             activeSong={activeSong}
             data={data.songs}
             i={i}
+            handleFavorites={handleFavorites}
           />
         ))}
       </div>

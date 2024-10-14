@@ -1,4 +1,5 @@
 /* eslint-disable comma-dangle */
+// import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   useGetAllGenresQuery,
@@ -7,7 +8,7 @@ import {
 import { Error, Loader, SongCard } from '../components';
 import { selectGenreListId } from '../redux/features/playerSlice';
 
-const Discover = () => {
+const Discover = ({ handleFavorites }) => {
   const dispatch = useDispatch();
   const { activeSong, isPlaying, genreListId } = useSelector(
     (state) => state.player
@@ -16,6 +17,14 @@ const Discover = () => {
   const { data, isFetching, error } = useGetSongsByGenreQuery(
     genreListId.toLowerCase()
   );
+
+  // const [favorites, setFavorites] = useState([]);
+
+  // useEffect(() => {}, [favorites]);
+
+  // const handleFavorites = (list) => {
+  //   setFavorites(list);
+  // };
 
   if (isFetching || isFetchingGenres) {
     return <Loader title="Loading songs..." />;
@@ -36,7 +45,7 @@ const Discover = () => {
           value={genreListId}
           className="bg-black text-gray-300 p-3 text-sm rounded-lg outline-none sm:mt-0 mt-5"
         >
-          {genres.map((genre) => (
+          {genres?.map((genre) => (
             <option key={genre} value={genre.toUpperCase()}>
               {genre.toUpperCase()}
             </option>
@@ -52,6 +61,7 @@ const Discover = () => {
             activeSong={activeSong}
             isPlaying={isPlaying}
             data={data}
+            handleFavorites={handleFavorites}
           />
         ))}
       </div>

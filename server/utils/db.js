@@ -143,7 +143,8 @@ class DBClient {
     );
     const user = await this.users.findOne({ _id: userId });
 
-    return this.songs.find({ _id: { $in: user.favoritedSongs } });
+    // return this.songs.find({ _id: { $in: user.favoritedSongs } });
+    return user.favoritedSongs;
   }
 
   async deleteSongFromFavorites(userId, songId) {
@@ -153,7 +154,8 @@ class DBClient {
     );
     const user = await this.users.findOne({ _id: userId });
 
-    return this.songs.find({ _id: { $in: user.favoritedSongs } });
+    // return this.songs.find({ _id: { $in: user.favoritedSongs } });
+    return user.favoritedSongs;
   }
 
   async getFavorites(userId) {

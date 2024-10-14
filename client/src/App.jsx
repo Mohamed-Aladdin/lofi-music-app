@@ -21,7 +21,12 @@ const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(
     !!window.localStorage.getItem('x-token')
   );
+  const [favorites, setFavorites] = useState([]);
   const { activeSong } = useSelector((state) => state.player);
+
+  useEffect(() => {
+    console.log('Favorites changed:', favorites);
+  }, [favorites]);
 
   useEffect(() => {
     const token = window.localStorage.getItem('x-token');
@@ -33,6 +38,10 @@ const App = () => {
       setIsAuthenticated(false);
     }
   }, []);
+
+  const handleFavorites = (list) => {
+    setFavorites(list);
+  };
 
   if (!isAuthenticated) {
     return (
@@ -54,14 +63,26 @@ const App = () => {
         <div className="px-6 h-[calc(100vh-72px)] overflow-y-scroll hide-scrollbar flex xl:flex-row flex-col-reverse">
           <div className="flex-1 h-fit pb-40">
             <Routes>
-              <Route path="/" element={<Discover />} />
+              <Route
+                path="/"
+                element={<Discover handleFavorites={handleFavorites} />}
+              />
               <Route path="/top-artists" element={<TopArtists />} />
-              <Route path="/top-charts" element={<TopCharts />} />
-              <Route path="/around-you" element={<AroundYou />} />
+              <Route
+                path="/top-charts"
+                element={<TopCharts handleFavorites={handleFavorites} />}
+              />
+              <Route
+                path="/around-you"
+                element={<AroundYou handleFavorites={handleFavorites} />}
+              />
               <Route path="/artists/:id" element={<ArtistDetails />} />
               <Route path="/songs/:songid" element={<SongDetails />} />
               <Route path="/search/:searchTerm" element={<Search />} />
-              <Route path="/favorites" element={<FavoriteSongs />} />
+              <Route
+                path="/favorites"
+                element={<FavoriteSongs handleFavorites={handleFavorites} />}
+              />
             </Routes>
           </div>
           <div className="xl:sticky relative top-0 h-fit">

@@ -77,7 +77,7 @@ export default class SongsController {
         req.params.id
       );
 
-      return res.status(204).json({ updatedFavorites });
+      return res.status(200).json(updatedFavorites);
     } catch (err) {
       console.error({ error: err.stack });
     }
