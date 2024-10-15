@@ -10,7 +10,7 @@ const PlaylistSchema = new mongoose.Schema(
     },
     name: { type: String, required: true },
     songs: {
-      type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Song' }],
+      type: [{ type: String, ref: 'Song' }],
       default: [],
     },
     collaborators: {

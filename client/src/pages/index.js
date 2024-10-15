@@ -8,6 +8,7 @@ import Search from './Search';
 import TopCharts from './TopCharts';
 import AroundYou from './AroundYou';
 import FavoriteSongs from './FavoriteSongs';
+import Playlists from './Playlists';
 
 export {
   Login,
@@ -20,4 +21,5 @@ export {
   TopCharts,
   AroundYou,
   FavoriteSongs,
+  Playlists,
 };

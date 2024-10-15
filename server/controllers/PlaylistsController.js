@@ -6,12 +6,37 @@ export default class PlaylistsController {
       const { user } = req;
       const userId = user._id;
       const name = req.body.name;
-      const playlist = { userId, name };
-
-      const newPlaylist = await dbClient.createPlaylist(playlist);
-      return res.status(201).json(newPlaylist);
+      if (req.body.collaborators) {
+        const collaboratorsList = req.body.collaborators.split(',');
+        const users = await dbClient.getUsers(collaboratorsList);
+        const collaborators = users.map((user) => user._id);
+        const uniqueIds = [...new Set(collaborators)];
+        const playlist = { userId, name, uniqueIds };
+        const newPlaylist = await dbClient.createPlaylist(playlist);
+        users.map(async (user) => {
+          await dbClient.addCollaboratorsToPlaylist(newPlaylist._id, user._id);
+        });
+        await dbClient.updateUserPlaylists(newPlaylist._id, user._id);
+        return res.status(201).json(newPlaylist);
+      } else {
+        const playlist = { userId, name };
+        const newPlaylist = await dbClient.createPlaylist(playlist);
+        await dbClient.updateUserPlaylists(newPlaylist._id, user._id);
+        return res.status(201).json(newPlaylist);
+      }
     } catch (err) {
-      console.error({ error: err.message });
+      console.error({ error: err.stack });
+    }
+  }
+
+  static async getAllUserPlaylists(req, res) {
+    try {
+      const { user } = req;
+      const playlists = await dbClient.getAllUserPlaylists(user._id);
+
+      return res.status(200).json(playlists);
+    } catch (err) {
+      console.error({ error: err.stack });
     }
   }
 
@@ -33,7 +58,7 @@ export default class PlaylistsController {
       );
       return res.status(200).json(updatedPlaylist);
     } catch (err) {
-      console.error({ error: err.message });
+      console.error({ error: err.stack });
     }
   }
 
@@ -42,7 +67,7 @@ export default class PlaylistsController {
       await dbClient.deletePlaylist(req.params.id);
       return res.status(204).send();
     } catch (err) {
-      console.error({ error: err.message });
+      console.error({ error: err.stack });
     }
   }
 
@@ -66,7 +91,7 @@ export default class PlaylistsController {
 
       return res.status(201).json(updatedPlaylist);
     } catch (err) {
-      console.error({ error: err.message });
+      console.error({ error: err.stack });
     }
   }
 
@@ -92,7 +117,7 @@ export default class PlaylistsController {
 
       return res.status(204).json(updatedPlaylist);
     } catch (err) {
-      console.error({ error: err.message });
+      console.error({ error: err.stack });
     }
   }
 
@@ -106,7 +131,7 @@ export default class PlaylistsController {
 
       return res.status(201).json(updatedFavorites);
     } catch (err) {
-      console.error({ error: err.message });
+      console.error({ error: err.stack });
     }
   }
 
@@ -120,7 +145,7 @@ export default class PlaylistsController {
 
       return res.status(204).json(updatedFavorites);
     } catch (err) {
-      console.error({ error: err.message });
+      console.error({ error: err.stack });
     }
   }
 }

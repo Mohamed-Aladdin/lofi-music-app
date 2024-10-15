@@ -39,6 +39,9 @@ export const coreAPI = createApi({
     getFavoritedSongs: builder.query({
       query: () => '/songs/favorites',
     }),
+    getAllPlaylists: builder.query({
+      query: () => '/playlists',
+    }),
 
     registerUser: builder.mutation({
       query: (userData) => ({
@@ -88,6 +91,16 @@ export const coreAPI = createApi({
         },
       }),
     }),
+    createPlaylist: builder.mutation({
+      query: (playlistData) => ({
+        url: '/playlists',
+        method: 'POST',
+        headers: {
+          'x-token': window.localStorage.getItem('x-token'),
+        },
+        body: playlistData,
+      }),
+    }),
   }),
 });
 
@@ -107,4 +120,6 @@ export const {
   useAddSongToFavoritesMutation,
   useRemoveSongFromFavoritesMutation,
   useGetFavoritedSongsQuery,
+  useGetAllPlaylistsQuery,
+  useCreatePlaylistMutation,
 } = coreAPI;

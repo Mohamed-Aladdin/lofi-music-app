@@ -59,6 +59,11 @@ class DBClient {
     return this.users.findOne({ username });
   }
 
+  async getUsers(usernames) {
+    const users = await this.users.find({ username: { $in: usernames } });
+    return users;
+  }
+
   async getUserPassword(email) {
     return this.users.findOne({ email }).select('password');
   }
@@ -88,6 +93,18 @@ class DBClient {
     return this.playlists.findById(id);
   }
 
+  async getAllUserPlaylists(userId) {
+    const user = await this.users.findById(userId);
+    const ownedPlaylists = await this.playlists.find({
+      _id: { $in: user.playlists },
+    });
+    const sharedPlaylists = await this.playlists.find({
+      _id: { $in: user.sharedPlaylists },
+    });
+
+    return { ownedPlaylists, sharedPlaylists };
+  }
+
   async updatePlaylist(id, playlist) {
     return this.playlists.findByIdAndUpdate(id, playlist, {
       new: true,
@@ -96,9 +113,19 @@ class DBClient {
   }
 
   async addCollaboratorsToPlaylist(playlistId, userId) {
-    return this.playlists.updateOne(
+    await this.playlists.updateOne(
       { _id: playlistId },
       { $push: { collaborators: userId } }
+    );
+    await this.users.updateOne(
+      { _id: userId },
+      { $push: { sharedPlaylists: playlistId } }
+    );
+  }
+  async updateUserPlaylists(playlistId, userId) {
+    return this.users.updateOne(
+      { _id: userId },
+      { $push: { playlists: playlistId } }
     );
   }
 

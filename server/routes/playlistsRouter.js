@@ -4,6 +4,8 @@ import PlaylistsController from '../controllers/PlaylistsController';
 
 const router = express.Router();
 
+router.get('/', verifyUserFromToken, PlaylistsController.getAllUserPlaylists);
+
 router.get('/:id', verifyUserFromToken, PlaylistsController.getPlaylist);
 
 router.post('/', verifyUserFromToken, PlaylistsController.createPlaylist);

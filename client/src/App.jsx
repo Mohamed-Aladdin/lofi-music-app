@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable comma-dangle */
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
@@ -15,6 +16,7 @@ import {
   SongDetails,
   TopCharts,
   FavoriteSongs,
+  Playlists,
 } from './pages';
 
 const App = () => {
@@ -24,9 +26,7 @@ const App = () => {
   const [favorites, setFavorites] = useState([]);
   const { activeSong } = useSelector((state) => state.player);
 
-  useEffect(() => {
-    console.log('Favorites changed:', favorites);
-  }, [favorites]);
+  useEffect(() => {}, [favorites]);
 
   useEffect(() => {
     const token = window.localStorage.getItem('x-token');
@@ -81,8 +81,14 @@ const App = () => {
               <Route path="/search/:searchTerm" element={<Search />} />
               <Route
                 path="/favorites"
-                element={<FavoriteSongs handleFavorites={handleFavorites} />}
+                element={
+                  <FavoriteSongs
+                    handleFavorites={handleFavorites}
+                    favorites={favorites}
+                  />
+                }
               />
+              <Route path="/playlists" element={<Playlists />} />
             </Routes>
           </div>
           <div className="xl:sticky relative top-0 h-fit">
