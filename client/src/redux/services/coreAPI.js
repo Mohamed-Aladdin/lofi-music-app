@@ -42,6 +42,9 @@ export const coreAPI = createApi({
     getAllPlaylists: builder.query({
       query: () => '/playlists',
     }),
+    getSongsFromPlaylist: builder.query({
+      query: ({ playlistid }) => `/playlists/${playlistid}`,
+    }),
 
     registerUser: builder.mutation({
       query: (userData) => ({
@@ -122,4 +125,5 @@ export const {
   useGetFavoritedSongsQuery,
   useGetAllPlaylistsQuery,
   useCreatePlaylistMutation,
+  useGetSongsFromPlaylistQuery,
 } = coreAPI;

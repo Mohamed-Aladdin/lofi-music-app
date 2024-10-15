@@ -40,14 +40,18 @@ export default class PlaylistsController {
     }
   }
 
-  static async getPlaylist(req, res) {
+  static async getPlaylistSongs(req, res) {
     const { user } = req;
     const playlist = await dbClient.getPlaylist(req.params.id);
 
-    if (playlist.userId != user._id) {
+    if (
+      playlist.userId.toString() !== user._id.toString() ||
+      !playlist.collaborators.includes(user._id)
+    ) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
-    return res.status(200).json(playlist);
+    const songs = await dbClient.getSongsFromPlaylist(req.params.id);
+    return res.status(200).json(songs);
   }
 
   static async updatePlaylist(req, res) {

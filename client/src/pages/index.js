@@ -9,6 +9,7 @@ import TopCharts from './TopCharts';
 import AroundYou from './AroundYou';
 import FavoriteSongs from './FavoriteSongs';
 import Playlists from './Playlists';
+import PlaylistDetails from './PlaylistDetails';
 
 export {
   Login,
@@ -22,4 +23,5 @@ export {
   AroundYou,
   FavoriteSongs,
   Playlists,
+  PlaylistDetails,
 };

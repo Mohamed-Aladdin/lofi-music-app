@@ -36,8 +36,6 @@ const Playlists = () => {
   if (isFetching) return <Loader title="Loading artists..." />;
   if (error) return <Error />;
 
-  console.log(data);
-
   return (
     <>
       <div className="flex flex-col mb-10">

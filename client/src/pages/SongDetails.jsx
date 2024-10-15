@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { DetailsHeader, Error, Loader, RelatedSongs } from '../components';
@@ -11,7 +12,9 @@ const SongDetails = () => {
   const dispatch = useDispatch();
   const { songid } = useParams();
   const { activeSong, isPlaying } = useSelector((state) => state.player);
-  const { data: songData, isFetching: isFetchingSongDetails } = useGetSongQuery({ songid });
+  const { data: songData, isFetching: isFetchingSongDetails } = useGetSongQuery(
+    { songid }
+  );
   const {
     data,
     isFetching: isFetchingRelatedSongs,

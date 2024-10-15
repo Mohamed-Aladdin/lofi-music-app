@@ -143,6 +143,11 @@ class DBClient {
     );
   }
 
+  async getSongsFromPlaylist(playlistId) {
+    const playlist = await this.playlists.findById(playlistId);
+    return this.songs.find({ _id: { $in: playlist.songs } });
+  }
+
   async deletePlaylist(id) {
     return this.playlists.deleteOne({ _id: id });
   }
