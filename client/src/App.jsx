@@ -79,7 +79,10 @@ const App = () => {
               />
               <Route path="/artists/:id" element={<ArtistDetails />} />
               <Route path="/songs/:songid" element={<SongDetails />} />
-              <Route path="/search/:searchTerm" element={<Search />} />
+              <Route
+                path="/search/:searchTerm"
+                element={<Search handleFavorites={handleFavorites} />}
+              />
               <Route
                 path="/favorites"
                 element={

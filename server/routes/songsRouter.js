@@ -12,7 +12,7 @@ router.post(
   SongsController.addSongToFavorites
 );
 
-router.put('/:id', verifyUserFromToken, SongsController.addSongToPlaylist);
+router.put('/:id', verifyUserFromToken, SongsController.addSongToPlaylists);
 
 router.delete(
   '/:id',

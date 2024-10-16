@@ -36,6 +36,8 @@ const Playlists = () => {
   if (isFetching) return <Loader title="Loading artists..." />;
   if (error) return <Error />;
 
+  console.log(data);
+
   return (
     <>
       <div className="flex flex-col mb-10">
@@ -95,7 +97,7 @@ const Playlists = () => {
 
         <div className="flex flex-wrap sm:justify-start justify-center gap-8">
           {data?.ownedPlaylists?.map((playlist) => (
-            <ArtistCard key={playlist.id} playlist={playlist} />
+            <ArtistCard key={playlist._id} playlist={playlist} />
           ))}
         </div>
       </div>
@@ -106,7 +108,7 @@ const Playlists = () => {
 
         <div className="flex flex-wrap sm:justify-start justify-center gap-8">
           {data?.sharedPlaylists?.map((playlist) => (
-            <ArtistCard key={playlist.id} playlist={playlist} />
+            <ArtistCard key={playlist._id} playlist={playlist} />
           ))}
         </div>
       </div>

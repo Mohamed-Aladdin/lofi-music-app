@@ -136,10 +136,10 @@ class DBClient {
     );
   }
 
-  async addSongsToPlaylist(playlistId, songId) {
-    return this.playlists.updateOne(
+  async addSongToPlaylists(playlistId, songId) {
+    await this.playlists.updateOne(
       { _id: playlistId },
-      { $pull: { songs: songId } }
+      { $push: { songs: songId } }
     );
   }
 

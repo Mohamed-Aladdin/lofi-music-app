@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Error, Loader, SongCard } from '../components';
 import { useSearchSongsQuery } from '../redux/services/coreAPI';
 
-const Search = () => {
+const Search = ({ handleFavorites }) => {
   const { searchTerm } = useParams();
   const { activeSong, isPlaying } = useSelector((state) => state.player);
   const { data, isFetching, error } = useSearchSongsQuery(searchTerm);
@@ -26,6 +26,7 @@ const Search = () => {
             activeSong={activeSong}
             data={data.tracks.items}
             i={i}
+            handleFavorites={handleFavorites}
           />
         ))}
       </div>

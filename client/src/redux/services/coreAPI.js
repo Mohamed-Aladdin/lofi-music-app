@@ -104,6 +104,16 @@ export const coreAPI = createApi({
         body: playlistData,
       }),
     }),
+    addSongToPlaylists: builder.mutation({
+      query: ({ playlistId, songData }) => ({
+        url: `/songs/${playlistId}`,
+        method: 'PUT',
+        headers: {
+          'x-token': window.localStorage.getItem('x-token'),
+        },
+        body: songData,
+      }),
+    }),
   }),
 });
 
@@ -126,4 +136,5 @@ export const {
   useGetAllPlaylistsQuery,
   useCreatePlaylistMutation,
   useGetSongsFromPlaylistQuery,
+  useAddSongToPlaylistsMutation,
 } = coreAPI;

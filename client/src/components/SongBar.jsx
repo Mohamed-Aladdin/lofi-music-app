@@ -29,7 +29,13 @@ const SongBar = ({
         <Link to={`/songs/${song?.id}`}>
           <p className="text-xl font-bold text-white">{song?.name}</p>
         </Link>
-        <Link to={`/artists/${song?.artists[0]?.id}`}>
+        <Link
+          to={
+            song?.artists[0]?.id
+              ? `/artists/${song?.artists[0]?.id}`
+              : '/top-artists'
+          }
+        >
           <p className="text-base text-gray-300 mt-1">
             {song?.artists[0]?.name}
           </p>

@@ -1,26 +1,27 @@
 import dbClient from '../utils/db';
 
 export default class SongsController {
-  static async addSongToPlaylist(req, res) {
+  static async addSongToPlaylists(req, res) {
     try {
       const { user } = req;
       const playlist = await dbClient.getPlaylist(req.params.id);
 
       if (
-        user._id !== playlist.userId ||
+        user._id.toString() !== playlist.userId.toString() &&
         !playlist.collaborators.includes(user._id)
       ) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
-      const song = await dbClient.createSong(req.body);
-      const updatedPlaylist = await dbClient.updatePlaylist(
-        req.params.id,
-        song._id
-      );
+      const foundSong = await dbClient.getSong(req.body._id);
 
-      return res.status(201).json(updatedPlaylist);
+      if (!foundSong) {
+        await dbClient.createSong(req.body);
+      }
+      await dbClient.addSongToPlaylists(req.params.id, req.body._id);
+
+      return res.status(201).send();
     } catch (err) {
-      console.error({ error: err.message });
+      console.error({ error: err.stack });
     }
   }
 
@@ -41,7 +42,7 @@ export default class SongsController {
       );
       return res.status(204).json(updatedPlaylist);
     } catch (err) {
-      console.error({ error: err.message });
+      console.error({ error: err.stack });
     }
   }
 
@@ -95,7 +96,7 @@ export default class SongsController {
       const songsList = favorites.songs.map((song) => ({
         id: song._id,
         name: song.title,
-        artists: [{ name: song.artist }],
+        artists: [{ name: song.artist, id: song.artistId }],
         album: { name: song.album, images: [{ url: song.thumbnail }] },
         duration_ms: song.duration,
         preview_url: song.preview_url,
@@ -106,7 +107,7 @@ export default class SongsController {
       };
       return res.status(200).json(favoriteSongs);
     } catch (err) {
-      console.error({ error: err.message });
+      console.error({ error: err.stack });
     }
   }
 }
