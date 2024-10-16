@@ -8,6 +8,8 @@ const RelatedSongs = ({
   activeSong,
   handlePauseClick,
   handlePlayClick,
+  playlist,
+  setPlaylistSongsChanged,
 }) => (
   <div className="flex flex-col">
     {!songs && (
@@ -27,6 +29,8 @@ const RelatedSongs = ({
           activeSong={activeSong}
           handlePauseClick={handlePauseClick}
           handlePlayClick={handlePlayClick}
+          playlist={playlist}
+          setPlaylistSongsChanged={setPlaylistSongsChanged}
         />
       ))}
     </div>

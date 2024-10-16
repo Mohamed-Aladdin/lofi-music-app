@@ -31,14 +31,14 @@ export default class SongsController {
       const playlist = await dbClient.getPlaylist(req.params.id);
 
       if (
-        user._id !== playlist.userId ||
+        user._id.toString() !== playlist.userId.toString() &&
         !playlist.collaborators.includes(user._id)
       ) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
       const updatedPlaylist = await dbClient.deleteSongFromPlaylist(
         playlist._id,
-        SongId
+        req.body.songId
       );
       return res.status(204).json(updatedPlaylist);
     } catch (err) {

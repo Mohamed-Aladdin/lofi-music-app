@@ -164,7 +164,7 @@ class DBClient {
   async deleteSongFromPlaylist(playlistId, songId) {
     return this.playlists.updateOne(
       { _id: playlistId },
-      { $pop: { songs: songId } }
+      { $pull: { songs: songId } }
     );
   }
 

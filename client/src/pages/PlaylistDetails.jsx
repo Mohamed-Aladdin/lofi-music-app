@@ -1,4 +1,5 @@
 /* eslint-disable comma-dangle */
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { Error, Loader, RelatedSongs } from '../components';
@@ -9,7 +10,14 @@ const PlaylistDetails = () => {
   const dispatch = useDispatch();
   const { playlistid } = useParams();
   const { activeSong, isPlaying } = useSelector((state) => state.player);
-  const { data, isFetching, error } = useGetSongsFromPlaylistQuery({ playlistid });
+  const { data, isFetching, error, refetch } = useGetSongsFromPlaylistQuery({
+    playlistid,
+  });
+  const [playlistSongsChanged, setPlaylistSongsChanged] = useState(false);
+
+  useEffect(() => {
+    refetch();
+  }, [playlistSongsChanged]);
 
   const handlePauseClick = () => {
     dispatch(playPause(false));
@@ -35,6 +43,8 @@ const PlaylistDetails = () => {
         activeSong={activeSong}
         handlePauseClick={handlePauseClick}
         handlePlayClick={handlePlayClick}
+        playlist="yes"
+        setPlaylistSongsChanged={setPlaylistSongsChanged}
       />
     </div>
   );
