@@ -31,7 +31,7 @@ export default class UsersController {
       const user = await dbClient.createUser(newUser);
       return res.status(201).json({ id: user._id, email });
     } catch (err) {
-      console.error({ error: err.message });
+      console.error({ error: err.stack });
     }
   }
 
@@ -41,7 +41,7 @@ export default class UsersController {
       delete user.password;
       return res.status(200).json(user);
     } catch (err) {
-      console.error({ error: err.message });
+      console.error({ error: err.stack });
     }
   }
 
@@ -50,16 +50,16 @@ export default class UsersController {
       const { user } = req;
       const checkUser = await dbClient.getUserPassword(user.email);
 
-      if (!bcrypt.compareSync(req.body.password, checkUser.password)) {
+      if (!bcrypt.compareSync(req.body.currentPassword, checkUser.password)) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
       const salt = parseInt(process.env.SALT, 10);
-      const hash = bcrypt.hashSync(req.body.newPassword, salt);
+      const hash = bcrypt.hashSync(req.body.password, salt);
 
       await dbClient.updateUserPass(user._id, hash);
       return res.status(200).send();
     } catch (err) {
-      console.error({ error: err.message });
+      console.error({ error: err.stack });
     }
   }
 
@@ -71,7 +71,7 @@ export default class UsersController {
       await redisClient.del(`auth_${req.headers['x-token']}`);
       return res.status(204).send();
     } catch (err) {
-      console.error({ error: err.message });
+      console.error({ error: err.stack });
     }
   }
 }

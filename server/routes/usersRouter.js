@@ -9,7 +9,7 @@ router.post('/register', UsersController.register);
 router.get('/me', verifyUserFromToken, UsersController.getMe);
 
 router.put(
-  '/resetPassword',
+  '/reset-password',
   verifyUserFromToken,
   UsersController.resetPassword
 );

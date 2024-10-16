@@ -10,6 +10,7 @@ import AroundYou from './AroundYou';
 import FavoriteSongs from './FavoriteSongs';
 import Playlists from './Playlists';
 import PlaylistDetails from './PlaylistDetails';
+import UserProfile from './UserProfile';
 
 export {
   Login,
@@ -24,4 +25,5 @@ export {
   FavoriteSongs,
   Playlists,
   PlaylistDetails,
+  UserProfile,
 };

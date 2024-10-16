@@ -6,6 +6,7 @@ import {
   HiOutlineLogout,
   HiHeart,
   HiMusicNote,
+  HiOutlineUser,
 } from 'react-icons/hi';
 
 export const genres = [
@@ -144,5 +145,6 @@ export const links = [
   { name: 'Top Charts', to: '/top-charts', icon: HiOutlineHashtag },
   { name: 'Favorites', to: '/favorites', icon: HiHeart },
   { name: 'Playlists', to: '/playlists', icon: HiMusicNote },
+  { name: 'Profile', to: '/profile', icon: HiOutlineUser },
   { name: 'Logout', to: '/login', icon: HiOutlineLogout },
 ];

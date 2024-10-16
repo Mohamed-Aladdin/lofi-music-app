@@ -45,6 +45,9 @@ export const coreAPI = createApi({
     getSongsFromPlaylist: builder.query({
       query: ({ playlistid }) => `/playlists/${playlistid}`,
     }),
+    getUserDetails: builder.query({
+      query: () => '/users/me',
+    }),
 
     registerUser: builder.mutation({
       query: (userData) => ({
@@ -72,6 +75,19 @@ export const coreAPI = createApi({
         method: 'DELETE',
         headers: {
           'x-token': window.localStorage.getItem('x-token'),
+        },
+      }),
+    }),
+    resetPassword: builder.mutation({
+      query: ({ currentPassword, password }) => ({
+        url: '/users/reset-password',
+        method: 'PUT',
+        headers: {
+          'x-token': window.localStorage.getItem('x-token'),
+        },
+        body: {
+          currentPassword,
+          password,
         },
       }),
     }),
@@ -169,9 +185,11 @@ export const {
   useGetRelatedSongsQuery,
   useGetSongsByCountryQuery,
   useGetAllGenresQuery,
+  useGetUserDetailsQuery,
   useRegisterUserMutation,
   useAuthenticateUserMutation,
   useLogoutUserMutation,
+  useResetPasswordMutation,
   useAddSongToFavoritesMutation,
   useRemoveSongFromFavoritesMutation,
   useGetFavoritedSongsQuery,
