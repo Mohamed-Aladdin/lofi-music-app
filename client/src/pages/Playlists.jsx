@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable no-alert */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Error, Loader, ArtistCard } from '../components';
 import {
   useCreatePlaylistMutation,
@@ -9,12 +9,17 @@ import {
 
 const Playlists = () => {
   const [showModal, setShowModal] = useState(false);
+  const [playlistsChanged, setPlaylistsChanged] = useState(false);
   const [playlistInfo, setPlaylistInfo] = useState({
     name: undefined,
     collaborators: undefined,
   });
   const { data, isFetching, error, refetch } = useGetAllPlaylistsQuery();
   const [createPlaylist] = useCreatePlaylistMutation();
+
+  useEffect(() => {
+    refetch();
+  }, [playlistsChanged]);
 
   const handleChange = (e) => {
     setPlaylistInfo((prev) => ({ ...prev, [e.target.id]: e.target.value }));
@@ -35,8 +40,6 @@ const Playlists = () => {
 
   if (isFetching) return <Loader title="Loading artists..." />;
   if (error) return <Error />;
-
-  console.log(data);
 
   return (
     <>
@@ -97,18 +100,26 @@ const Playlists = () => {
 
         <div className="flex flex-wrap sm:justify-start justify-center gap-8">
           {data?.ownedPlaylists?.map((playlist) => (
-            <ArtistCard key={playlist._id} playlist={playlist} />
+            <ArtistCard
+              key={playlist._id}
+              playlist={playlist}
+              setPlaylistsChanged={setPlaylistsChanged}
+            />
           ))}
         </div>
       </div>
       <div className="flex flex-col">
         <h2 className="font-bold text-3xl text-white text-left mt-4 mb-10">
-          Playlists to contribute to
+          Playlists to Contribute to
         </h2>
 
         <div className="flex flex-wrap sm:justify-start justify-center gap-8">
           {data?.sharedPlaylists?.map((playlist) => (
-            <ArtistCard key={playlist._id} playlist={playlist} />
+            <ArtistCard
+              key={playlist._id}
+              playlist={playlist}
+              setPlaylistsChanged={setPlaylistsChanged}
+            />
           ))}
         </div>
       </div>

@@ -126,6 +126,15 @@ export const coreAPI = createApi({
         },
       }),
     }),
+    deletePlaylist: builder.mutation({
+      query: (playlistId) => ({
+        url: `/playlists/${playlistId}`,
+        method: 'DELETE',
+        headers: {
+          'x-token': window.localStorage.getItem('x-token'),
+        },
+      }),
+    }),
   }),
 });
 
@@ -150,4 +159,5 @@ export const {
   useGetSongsFromPlaylistQuery,
   useAddSongToPlaylistsMutation,
   useDeleteSongFromPlaylistMutation,
+  useDeletePlaylistMutation,
 } = coreAPI;

@@ -123,16 +123,29 @@ class DBClient {
     );
   }
   async updateUserPlaylists(playlistId, userId) {
-    return this.users.updateOne(
+    await this.users.updateOne(
       { _id: userId },
       { $push: { playlists: playlistId } }
     );
   }
+  async deletePlaylistFromUser(userId, playlistId) {
+    await this.users.updateOne(
+      { _id: userId },
+      { $pull: { playlists: playlistId } }
+    );
+  }
+
+  async deleteFromSharedPlaylist(playlistId, userIds) {
+    await this.users.updateMany(
+      { _id: { $in: userIds } },
+      { $pull: { sharedPlaylists: playlistId } }
+    );
+  }
 
   async deleteCollaboratorsFromPlaylist(playlistId, userId) {
-    return this.playlists.updateOne(
+    await this.playlists.updateOne(
       { _id: playlistId },
-      { $pop: { collaborators: userId } }
+      { $pull: { collaborators: userId } }
     );
   }
 

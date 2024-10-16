@@ -41,25 +41,38 @@ export default class PlaylistsController {
   }
 
   static async getPlaylistSongs(req, res) {
-    const { user } = req;
-    const playlist = await dbClient.getPlaylist(req.params.id);
+    try {
+      const { user } = req;
+      const playlist = await dbClient.getPlaylist(req.params.id);
 
-    if (
-      playlist.userId.toString() !== user._id.toString() &&
-      !playlist.collaborators.includes(user._id)
-    ) {
-      return res.status(401).json({ error: 'Unauthorized' });
+      if (
+        playlist.userId.toString() !== user._id.toString() &&
+        !playlist.collaborators.includes(user._id)
+      ) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      const songs = await dbClient.getSongsFromPlaylist(req.params.id);
+      const songsList = songs.map((song) => ({
+        id: song._id,
+        name: song.title,
+        artists: [{ name: song.artist, id: song.artistId }],
+        album: { name: song.album, images: [{ url: song.thumbnail }] },
+        duration_ms: song.duration,
+        preview_url: song.preview_url,
+      }));
+      const collaborators = await Promise.all(
+        playlist.collaborators.map(async (userId) => {
+          const user = await dbClient.getUserById(userId);
+          return user.username;
+        })
+      );
+
+      return res
+        .status(200)
+        .json({ playlist, songs: songsList, collaborators });
+    } catch (err) {
+      console.error({ error: err.stack });
     }
-    const songs = await dbClient.getSongsFromPlaylist(req.params.id);
-    const songsList = songs.map((song) => ({
-      id: song._id,
-      name: song.title,
-      artists: [{ name: song.artist, id: song.artistId }],
-      album: { name: song.album, images: [{ url: song.thumbnail }] },
-      duration_ms: song.duration,
-      preview_url: song.preview_url,
-    }));
-    return res.status(200).json(songsList);
   }
 
   static async updatePlaylist(req, res) {
@@ -76,7 +89,19 @@ export default class PlaylistsController {
 
   static async deletePlaylist(req, res) {
     try {
+      const { user } = req;
+      const playlist = await dbClient.getPlaylist(req.params.id);
+
+      if (user._id.toString() !== playlist.userId.toString()) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      await dbClient.deletePlaylistFromUser(user._id, req.params.id);
+      await dbClient.deleteFromSharedPlaylist(
+        req.params.id,
+        playlist.collaborators
+      );
       await dbClient.deletePlaylist(req.params.id);
+
       return res.status(204).send();
     } catch (err) {
       console.error({ error: err.stack });
