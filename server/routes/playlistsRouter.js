@@ -13,13 +13,13 @@ router.post('/', verifyUserFromToken, PlaylistsController.createPlaylist);
 router.put('/:id', verifyUserFromToken, PlaylistsController.updatePlaylist);
 
 router.put(
-  '/collaborators/:id',
+  '/:playlistId/collaborators',
   verifyUserFromToken,
   PlaylistsController.addCollaborators
 );
 
 router.delete(
-  '/collaborators/:id',
+  '/:playlistId/collaborators/:collaboratorId',
   verifyUserFromToken,
   PlaylistsController.deleteCollaborators
 );

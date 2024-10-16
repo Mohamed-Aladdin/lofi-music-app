@@ -135,6 +135,27 @@ export const coreAPI = createApi({
         },
       }),
     }),
+    addCollaboratorsToPlaylist: builder.mutation({
+      query: ({ playlistid, collaborators }) => ({
+        url: `/playlists/${playlistid}/collaborators`,
+        method: 'PUT',
+        headers: {
+          'x-token': window.localStorage.getItem('x-token'),
+        },
+        body: {
+          collaborators,
+        },
+      }),
+    }),
+    deleteCollaboratorFromPlaylist: builder.mutation({
+      query: ({ playlistid, collaboratorId }) => ({
+        url: `/playlists/${playlistid}/collaborators/${collaboratorId}`,
+        method: 'DELETE',
+        headers: {
+          'x-token': window.localStorage.getItem('x-token'),
+        },
+      }),
+    }),
   }),
 });
 
@@ -160,4 +181,6 @@ export const {
   useAddSongToPlaylistsMutation,
   useDeleteSongFromPlaylistMutation,
   useDeletePlaylistMutation,
+  useAddCollaboratorsToPlaylistMutation,
+  useDeleteCollaboratorFromPlaylistMutation,
 } = coreAPI;

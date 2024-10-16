@@ -7,15 +7,22 @@ export default class PlaylistsController {
       const userId = user._id;
       const name = req.body.name;
       if (req.body.collaborators) {
-        const collaboratorsList = req.body.collaborators.split(',');
+        const collaboratorsList = req.body.collaborators
+          .split(',')
+          .map((user) => user.trim());
         const users = await dbClient.getUsers(collaboratorsList);
         const collaborators = users.map((user) => user._id);
         const uniqueIds = [...new Set(collaborators)];
         const playlist = { userId, name, uniqueIds };
         const newPlaylist = await dbClient.createPlaylist(playlist);
-        users.map(async (user) => {
-          await dbClient.addCollaboratorsToPlaylist(newPlaylist._id, user._id);
-        });
+        Promise.all(
+          users.map(async (user) => {
+            await dbClient.addCollaboratorsToPlaylist(
+              newPlaylist._id,
+              user._id
+            );
+          })
+        );
         await dbClient.updateUserPlaylists(newPlaylist._id, user._id);
         return res.status(201).json(newPlaylist);
       } else {
@@ -62,8 +69,7 @@ export default class PlaylistsController {
       }));
       const collaborators = await Promise.all(
         playlist.collaborators.map(async (userId) => {
-          const user = await dbClient.getUserById(userId);
-          return user.username;
+          return await dbClient.getUserById(userId);
         })
       );
 
@@ -111,22 +117,25 @@ export default class PlaylistsController {
   static async addCollaborators(req, res) {
     try {
       const { user } = req;
-      const playlist = await dbClient.getPlaylist(req.params.id);
+      const playlist = await dbClient.getPlaylist(req.params.playlistId);
 
-      if (user._id !== playlist.userId) {
+      if (user._id.toString() !== playlist.userId.toString()) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
-      const userToBeAdded = await dbClient.getUserByUsername(req.body.username);
+      const usersToBeAdded = await dbClient.getUsers(req.body.collaborators);
 
-      if (!userToBeAdded) {
+      if (!usersToBeAdded) {
         return res.status(404).json({ error: 'Not found' });
       }
-      const updatedPlaylist = await dbClient.addCollaboratorsToPlaylist(
-        playlist._id,
-        userToBeAdded._id
+      const collaborators = usersToBeAdded.map((user) => user._id);
+      const uniqueIds = [...new Set(collaborators)];
+      Promise.all(
+        uniqueIds.map(async (id) => {
+          await dbClient.addCollaboratorsToPlaylist(playlist._id, id);
+        })
       );
 
-      return res.status(201).json(updatedPlaylist);
+      return res.status(201).send();
     } catch (err) {
       console.error({ error: err.stack });
     }
@@ -135,24 +144,29 @@ export default class PlaylistsController {
   static async deleteCollaborators(req, res) {
     try {
       const { user } = req;
-      const playlist = await dbClient.getPlaylist(req.params.id);
 
-      if (user._id !== playlist.userId) {
+      const playlist = await dbClient.getPlaylist(req.params.playlistId);
+
+      if (user._id.toString() !== playlist.userId.toString()) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
-      const userToBeRemoved = await dbClient.getUserByUsername(
-        req.body.username
+      const userToBeRemoved = await dbClient.getUserById(
+        req.params.collaboratorId
       );
 
       if (!userToBeRemoved) {
         return res.status(404).json({ error: 'Not found' });
       }
-      const updatedPlaylist = await dbClient.deleteCollaboratorsFromPlaylist(
+      await dbClient.deleteCollaboratorsFromPlaylist(
+        playlist._id,
+        userToBeRemoved._id
+      );
+      await dbClient.deleteFromSharedPlaylist(
         playlist._id,
         userToBeRemoved._id
       );
 
-      return res.status(204).json(updatedPlaylist);
+      return res.status(204).send();
     } catch (err) {
       console.error({ error: err.stack });
     }
