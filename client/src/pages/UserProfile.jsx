@@ -45,38 +45,38 @@ const UserProfile = () => {
 
   return (
     <div className="flex flex-col items-center p-4 bg-white/5 bg-opacity-80 backdrop-blur-sm rounded-lg w-full">
-      <h2 className="text-3xl font-bold text-white">User Profile</h2>
+      <h2 className="text-3xl font-bold text-white mb-5">User Profile</h2>
       <div className="w-full mt-4">
         <div className="flex flex-col text-white">
-          <div className="flex justify-between">
+          <div className="flex justify-between mb-5">
             <p className="font-bold">Full Name:</p>
             <p>{user.name}</p>
           </div>
-          <div className="flex justify-between">
+          <div className="flex justify-between mb-5">
             <p className="font-bold">Username:</p>
             <p>{user.username}</p>
           </div>
-          <div className="flex justify-between">
+          <div className="flex justify-between mb-5">
             <p className="font-bold">Email:</p>
             <p>{user.email}</p>
           </div>
-          <div className="flex justify-between">
+          <div className="flex justify-between mb-5">
             <p className="font-bold">Phone:</p>
             <p>{user.phone}</p>
           </div>
-          <div className="flex justify-between">
+          <div className="flex justify-between mb-5">
             <p className="font-bold">Country:</p>
             <p>{user.country || 'Not provided'}</p>
           </div>
-          <div className="flex justify-between">
+          <div className="flex justify-between mb-5">
             <p className="font-bold">Playlists:</p>
             <p>{user.playlists.length} playlists</p>
           </div>
-          <div className="flex justify-between">
+          <div className="flex justify-between mb-5">
             <p className="font-bold">Favorited Songs:</p>
             <p>{user.favoritedSongs.length} songs</p>
           </div>
-          <div className="flex justify-between">
+          <div className="flex justify-between mb-5">
             <p className="font-bold">Shared Playlists:</p>
             <p>{user.sharedPlaylists.length} playlists</p>
           </div>

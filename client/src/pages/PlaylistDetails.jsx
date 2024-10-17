@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 /* eslint-disable no-alert */
 /* eslint-disable react/jsx-curly-newline */
 /* eslint-disable operator-linebreak */
@@ -94,39 +95,44 @@ const PlaylistDetails = () => {
               <p className="font-bold sm:text-3xl text-xl text-white">
                 {data?.playlist?.name}
               </p>
-              {data?.playlist?.collaborators.length > 0 && (
-                <>
-                  <p className="text-base text-gray-700 mt-2 font-bold">
-                    Collaborators
-                  </p>
-                  <p className="text-base text-gray-400 mt-2">
-                    {data?.collaborators?.map((collaborator) => (
-                      <span
-                        key={collaborator._id}
-                        className="flex items-center"
-                      >
-                        {collaborator.username}
-                        <button
-                          type="submit"
-                          onClick={() =>
-                            handleRemoveCollaborator(collaborator._id)
-                          }
-                          className="ml-2 text-red-500"
+              {data?.playlist?.collaborators.length > 0 &&
+                data?.playlist?.userId ===
+                  window.localStorage.getItem('userId') && (
+                  <>
+                    <p className="text-base text-gray-700 mt-2 font-bold">
+                      Collaborators
+                    </p>
+                    <p className="text-base text-gray-400 mt-2">
+                      {data?.collaborators?.map((collaborator) => (
+                        <span
+                          key={collaborator._id}
+                          className="flex items-center"
                         >
-                          Remove
-                        </button>
-                      </span>
-                    ))}
-                  </p>
-                </>
+                          {collaborator.username}
+                          <button
+                            type="submit"
+                            onClick={() =>
+                              handleRemoveCollaborator(collaborator._id)
+                            }
+                            className="ml-2 text-red-500"
+                          >
+                            Remove
+                          </button>
+                        </span>
+                      ))}
+                    </p>
+                  </>
+                )}
+              {data?.playlist?.userId ===
+                window.localStorage.getItem('userId') && (
+                <button
+                  type="button"
+                  className="mt-2 p-2 bg-blue-500 text-white rounded"
+                  onClick={() => setShowCollaboratorModal(true)}
+                >
+                  Manage Collaborators
+                </button>
               )}
-              <button
-                type="button"
-                className="mt-2 p-2 bg-blue-500 text-white rounded"
-                onClick={() => setShowCollaboratorModal(true)}
-              >
-                Manage Collaborators
-              </button>
             </div>
           </div>
         </div>
