@@ -1,7 +1,7 @@
 
 # LoFi Music App 🎶
 
-**LoFi Music App** is a modern web application designed to stream lo-fi music, offering a sleek and simple interface for discovering and playing music.
+**LoFi Music App** is a modern web application designed to stream music, offering a sleek and simple interface for discovering and playing music.
 
 ## Features 🚀
 
