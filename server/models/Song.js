@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const SongSchema = new mongoose.Schema(
   {
-    _id: { type: String, required: true },
+    _id: { type: String, required: true, unique: true },
     title: { type: String, required: true, trim: true },
     artist: { type: String, required: true, trim: true },
     artistId: { type: String, required: true, trim: true },
