@@ -98,7 +98,10 @@ const App = () => {
                 path="/playlists/:playlistid"
                 element={<PlaylistDetails />}
               />
-              <Route path="/profile" element={<UserProfile />} />
+              <Route
+                path="/profile"
+                element={<UserProfile handleFavorites={handleFavorites} />}
+              />
             </Routes>
           </div>
           <div className="xl:sticky relative top-0 h-fit">

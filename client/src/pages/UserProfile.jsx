@@ -7,14 +7,18 @@ import {
 } from '../redux/services/coreAPI';
 import { Loader, Error } from '../components';
 
-const UserProfile = () => {
-  const { data: user, isFetching, error } = useGetUserDetailsQuery();
+const UserProfile = ({ handleFavorites }) => {
+  const { data: user, isFetching, error, refetch } = useGetUserDetailsQuery();
   const [resetPassword] = useResetPasswordMutation();
   const [currentPassword, setCurrentPassword] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+
+  useEffect(() => {
+    refetch();
+  }, [handleFavorites]);
 
   useEffect(() => {
     if (password !== confirmPassword) {
